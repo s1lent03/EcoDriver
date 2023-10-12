@@ -70,7 +70,8 @@ public class AutoCarController : MonoBehaviour
             steerTurn = new Vector3(transform.rotation.x, transform.rotation.y + steerDirection, transform.rotation.z);
 
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(steerTurn), 0.75f * Time.deltaTime);
-            Debug.Log(steerDirection);
+            //transform.rotation = Quaternion.Euler(steerTurn);
+            //Debug.Log(steerDirection);
         }
         else
             steerDirection = 0;
