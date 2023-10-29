@@ -1,7 +1,10 @@
+using Palmmedia.ReportGenerator.Core.Reporting.Builders;
 using System.Collections;
 using System.Collections.Generic;
+using TreeEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.Rendering.DebugUI;
 
 public class AutoCarController : MonoBehaviour
 {
@@ -17,6 +20,9 @@ public class AutoCarController : MonoBehaviour
     [Header("Velocity")]
     public float velocity = 10f;
     public float maxVelocity = 200f;
+    [Space]
+    public float speedKMH;
+    private Vector3 lastPosition;
 
     [Header("Steer")]
     public float steerVelocity = 10f;
@@ -29,6 +35,11 @@ public class AutoCarController : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         rb = GetComponent<Rigidbody>();
         pad = Gamepad.current;
+
+        lastPosition = transform.position;
+
+        //TEMPORARIO
+        velocity = 0f;
     }
 
     void Update()
@@ -104,6 +115,18 @@ public class AutoCarController : MonoBehaviour
         }
         else
             steerDirection = 0;
+
+        //Velocidade do veículo
+        Vector3 currentPosition = transform.position;
+        Vector3 displacement = currentPosition - lastPosition;
+
+        float speedMS = displacement.magnitude / Time.deltaTime;
+        speedKMH = speedMS * 3.6f;
+
+        lastPosition = currentPosition;
+
+        //TEMPORARIO
+        velocity += Time.deltaTime*4;
     }
 
     //Faz o comando vibrar
