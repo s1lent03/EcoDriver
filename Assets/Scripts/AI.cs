@@ -28,12 +28,19 @@ public class AI : MonoBehaviour
 
         if (paths.Count > 0)
         {
-            if (paths[0].CompareTag("Road"))
+            if (paths[paths.Count - 1].CompareTag("Road"))
+            {
                 Road();
-            else if (paths[0].CompareTag("Stop"))
+            } else if (paths[paths.Count - 1].CompareTag("Stop"))
+            {
                 Stop();
-            else if (paths[0].CompareTag("Junction"))
+            } else if (paths[paths.Count - 1].CompareTag("Junction"))
+            {
                 Junction();
+            } else if (paths[paths.Count - 1].CompareTag("Roundabout"))
+            {
+                Roundabout();
+            }
         } else if (doJunction)
         {
             Junction();
@@ -53,11 +60,11 @@ public class AI : MonoBehaviour
         {
             transform.forward = Vector3.Slerp(transform.forward, road.forward, Time.deltaTime * turningSpeed);
 
-            if (paths.Count > 0 && paths[0] == road)
+            if (paths.Count > 0 && paths[paths.Count - 1] == road)
                 road = null;
         } else
         {
-            transform.forward = Vector3.Slerp(transform.forward, paths[0].forward, Time.deltaTime * turningSpeed);
+            transform.forward = Vector3.Slerp(transform.forward, paths[paths.Count - 1].forward, Time.deltaTime * turningSpeed);
         }
 
         direction = transform.forward * currentSpeed * Time.deltaTime;
@@ -88,13 +95,32 @@ public class AI : MonoBehaviour
         if (!doJunction)
         {
             doJunction = true;
-            road = paths[0].GetComponent<RoadSelector>().obtainRandomRoad();
+            road = paths[paths.Count - 1].GetComponent<RoadSelector>().obtainRandomRoad();
         }
 
         if (Mathf.Round(transform.position.x - road.position.x) != 0 && Mathf.Round(transform.position.z - road.position.z) != 0)
             direction = transform.forward * currentSpeed * Time.deltaTime;
         else
             doJunction = false;
+    }
+
+    private void Roundabout()
+    {
+        Debug.Log(paths[paths.Count - 1].GetComponent<RoadSelector>().roads[0].name + "|" + (transform.position - paths[paths.Count - 1].GetComponent<RoadSelector>().roads[0].position).magnitude);
+        Debug.Log(paths[paths.Count - 1].GetComponent<RoadSelector>().roads[1].name + "|" + (transform.position - paths[paths.Count - 1].GetComponent<RoadSelector>().roads[1].position).magnitude);
+        Debug.Log(paths[paths.Count - 1].GetComponent<RoadSelector>().roads[2].name + "|" + (transform.position - paths[paths.Count - 1].GetComponent<RoadSelector>().roads[2].position).magnitude);
+        /*Move();
+
+        if (!doJunction)
+        {
+            doJunction = true;
+            road = paths[paths.Count - 1].GetComponent<RoadSelector>().obtainRandomRoad();
+        }
+
+        if (Mathf.Round(transform.position.x - road.position.x) != 0 && Mathf.Round(transform.position.z - road.position.z) != 0)
+            direction = transform.forward * currentSpeed * Time.deltaTime;
+        else
+            doJunction = false;*/
     }
 
     private void OnTriggerEnter(Collider other)

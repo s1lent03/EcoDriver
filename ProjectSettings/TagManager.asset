@@ -8,6 +8,7 @@ TagManager:
   - Stop
   - Junction
   - Car
+  - Roundabout
   layers:
   - Default
   - TransparentFX
