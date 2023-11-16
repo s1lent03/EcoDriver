@@ -151,6 +151,17 @@
                 },
                 {
                     "name": "",
+                    "id": "3a7cf7ea-de58-4ac5-bebe-4574f70b2ca7",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Clutch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "d1891d6b-d280-4a79-92a3-1118bfe4560f",
                     "path": "<XInputController>/rightTrigger",
                     "interactions": "",
@@ -164,6 +175,17 @@
                     "name": "",
                     "id": "a172aaad-7987-4fdb-800d-ed5befff80a6",
                     "path": "<DualShockGamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Accelerator",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4173cb98-3f4b-482e-99f7-497ba4ccb372",
+                    "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -194,6 +216,39 @@
                     "isPartOfComposite": false
                 },
                 {
+                    "name": "Keyboard",
+                    "id": "4b28d8c1-8852-46e3-b177-fff45e578b2c",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Steer",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "left",
+                    "id": "9c8b8bbc-af43-4ef4-b1af-90e4b56fb66e",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Steer",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "3751149e-4e0f-4b5d-9b43-68b79bee1d2f",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Steer",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "",
                     "id": "9a4f336f-6c44-4cf2-8662-bd4f093529b4",
                     "path": "<XInputController>/leftStickPress",
@@ -208,6 +263,17 @@
                     "name": "",
                     "id": "c7a6e8ad-7a96-42b2-8f7d-5a51db7ca830",
                     "path": "<DualShockGamepad>/leftStickPress",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reverse",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "27bbe1b1-f6e0-4694-b80a-ef717c981451",
+                    "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
