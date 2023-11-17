@@ -1,8 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class AI : MonoBehaviour
 {
@@ -14,8 +11,13 @@ public class AI : MonoBehaviour
     private float currentSpeed;
     private Vector3 direction;
     private bool doJunction;
+    private bool doRoundabout;
     private List<Transform> paths = new List<Transform>();
     private Transform road;
+    private Transform[] roundabouts;
+    public Transform closestRoundabout;
+    public Transform destination;
+    private string sideOfRoundabout;
 
     private void Awake()
     {
@@ -26,7 +28,17 @@ public class AI : MonoBehaviour
     {
         direction = Vector3.zero;
 
-        if (paths.Count > 0)
+        if (doJunction)
+        {
+            Junction();
+        } else if (doRoundabout)
+        {
+            Roundabout();
+        }
+        else if (road != null)
+        {
+            Road();
+        } else if (paths.Count > 0)
         {
             if (paths[paths.Count - 1].CompareTag("Road"))
             {
@@ -41,13 +53,7 @@ public class AI : MonoBehaviour
             {
                 Roundabout();
             }
-        } else if (doJunction)
-        {
-            Junction();
-        } else if (road != null)
-        {
-            Road();
-        }
+        } 
 
         transform.position += direction;
     }
@@ -106,21 +112,50 @@ public class AI : MonoBehaviour
 
     private void Roundabout()
     {
-        Debug.Log(paths[paths.Count - 1].GetComponent<RoadSelector>().roads[0].name + "|" + (transform.position - paths[paths.Count - 1].GetComponent<RoadSelector>().roads[0].position).magnitude);
-        Debug.Log(paths[paths.Count - 1].GetComponent<RoadSelector>().roads[1].name + "|" + (transform.position - paths[paths.Count - 1].GetComponent<RoadSelector>().roads[1].position).magnitude);
-        Debug.Log(paths[paths.Count - 1].GetComponent<RoadSelector>().roads[2].name + "|" + (transform.position - paths[paths.Count - 1].GetComponent<RoadSelector>().roads[2].position).magnitude);
-        /*Move();
+        Move();
 
-        if (!doJunction)
+        if (!doRoundabout)
         {
-            doJunction = true;
-            road = paths[paths.Count - 1].GetComponent<RoadSelector>().obtainRandomRoad();
-        }
+            doRoundabout = true;
+            roundabouts = paths[paths.Count - 1].GetComponent<RoadSelector>().roads;
+            destination = paths[paths.Count - 1].GetComponent<RoadSelector>().obtainRandomRoad();
+            GetClosestRoundabout();
 
-        if (Mathf.Round(transform.position.x - road.position.x) != 0 && Mathf.Round(transform.position.z - road.position.z) != 0)
+            if (destination == closestRoundabout)
+                sideOfRoundabout = "Outside";
+            else
+                sideOfRoundabout = "Inside";
+        }
+        
+
+        if (paths[0].parent.name != sideOfRoundabout)
+        {
             direction = transform.forward * currentSpeed * Time.deltaTime;
+        }
         else
-            doJunction = false;*/
+        {
+            Debug.Log((transform.position - closestRoundabout.position).magnitude);
+
+            if (Mathf.Round(transform.position.x - destination.position.x) != 0 && Mathf.Round(transform.position.z - destination.position.z) != 0)
+            {
+                Road();
+            }/* else
+            {
+                doRoundabout = false;
+                road = destination;
+            }*/
+        }
+    }
+
+    private void GetClosestRoundabout()
+    {
+        for (int i = 0; i < roundabouts.Length; i++)
+        {
+            if ((closestRoundabout == null || (transform.position - roundabouts[i].position).magnitude < (transform.position - closestRoundabout.position).magnitude) && paths[paths.Count - 1].parent != roundabouts[i].parent)
+            {
+                closestRoundabout = roundabouts[i];
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider other)
