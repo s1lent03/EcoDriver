@@ -1,25 +1,40 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Options
+{
+    Road,
+    Car
+}
+
 public class CarDetector : MonoBehaviour
 {
+    public Options option = new Options();
     private List<Transform> cars = new List<Transform>();
     private Transform road;
     private string roadTag;
 
     private void Awake()
     {
-        road = transform.parent.transform;
-        roadTag = road.tag;
+        if (option == Options.Road)
+        {
+            road = transform.parent.transform;
+            roadTag = road.tag;
+        }
     }
 
     private void Update()
     {
-        if (cars.Count > 0)
-            road.tag = "Stop";
-        else
-            road.tag = roadTag;
+        if (option == Options.Road)
+        {
+            if (cars.Count > 0)
+                road.tag = "Stop";
+            else
+                road.tag = roadTag;
+        } else if (option == Options.Car)
+        {
+            transform.parent.GetComponent<AI>().forceStop = (cars.Count > 0);
+        }
     }
 
     private void OnTriggerEnter(Collider other)

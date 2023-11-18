@@ -8,6 +8,9 @@ public class AI : MonoBehaviour
     public float turningSpeed;
     public float stopMultiplier;
 
+    [Header("Toggles")]
+    public bool forceStop;
+
     private float currentSpeed;
     private Vector3 direction;
     private bool doJunction;
@@ -15,9 +18,11 @@ public class AI : MonoBehaviour
     private List<Transform> paths = new List<Transform>();
     private Transform road;
     private Transform[] roundabouts;
-    public Transform closestRoundabout;
-    public Transform destination;
+    private Transform closestRoundabout;
+    private Transform previousRoundabout;
+    private Transform destination;
     private string sideOfRoundabout;
+    private float distance;
 
     private void Awake()
     {
@@ -27,6 +32,9 @@ public class AI : MonoBehaviour
     private void Update()
     {
         direction = Vector3.zero;
+
+        if (forceStop)
+            currentSpeed -= Time.deltaTime * stopMultiplier;
 
         if (doJunction)
         {
@@ -119,43 +127,79 @@ public class AI : MonoBehaviour
             doRoundabout = true;
             roundabouts = paths[paths.Count - 1].GetComponent<RoadSelector>().roads;
             destination = paths[paths.Count - 1].GetComponent<RoadSelector>().obtainRandomRoad();
-            GetClosestRoundabout();
-
-            if (destination == closestRoundabout)
-                sideOfRoundabout = "Outside";
-            else
-                sideOfRoundabout = "Inside";
+            GetClosestRoundabout(paths[paths.Count - 1]);
         }
-        
 
-        if (paths[0].parent.name != sideOfRoundabout)
+        if (paths.Count <= 0 || paths[0].parent.name != sideOfRoundabout)
         {
             direction = transform.forward * currentSpeed * Time.deltaTime;
         }
         else
         {
-            Debug.Log((transform.position - closestRoundabout.position).magnitude);
-
-            if (Mathf.Round(transform.position.x - destination.position.x) != 0 && Mathf.Round(transform.position.z - destination.position.z) != 0)
+            if (destination != closestRoundabout)
             {
-                Road();
-            }/* else
+                if (DidAIPassRoundabout())
+                {
+                    GetClosestRoundabout(closestRoundabout);
+                } else
+                {
+                    Road();
+                }
+            } else
             {
-                doRoundabout = false;
-                road = destination;
-            }*/
+                if (Mathf.Round(transform.position.x - destination.position.x) != 0 && Mathf.Round(transform.position.z - destination.position.z) != 0)
+                {
+                    Road();
+                } else
+                {
+                    doRoundabout = false;
+                    road = destination;
+                    closestRoundabout = null;
+                    previousRoundabout = null;
+                }
+            }
         }
     }
 
-    private void GetClosestRoundabout()
+    private bool DidAIPassRoundabout()
     {
+        float temp = (transform.position - closestRoundabout.position).magnitude;
+
+        if (temp <= distance)
+        {
+            distance = temp;
+            return false;
+        } else
+        {
+            return true;
+        }
+    }
+
+    private void GetClosestRoundabout(Transform current)
+    {
+        closestRoundabout = null;
+
         for (int i = 0; i < roundabouts.Length; i++)
         {
-            if ((closestRoundabout == null || (transform.position - roundabouts[i].position).magnitude < (transform.position - closestRoundabout.position).magnitude) && paths[paths.Count - 1].parent != roundabouts[i].parent)
+            if (roundabouts[i].parent == current.parent || (previousRoundabout != null && roundabouts[i].parent == previousRoundabout.parent))
+            {
+                continue;
+            }
+            
+            if (closestRoundabout == null || (transform.position - roundabouts[i].position).magnitude < (transform.position - closestRoundabout.position).magnitude)
             {
                 closestRoundabout = roundabouts[i];
             }
         }
+
+        previousRoundabout = current;
+
+        if (destination == closestRoundabout)
+            sideOfRoundabout = "Outside";
+        else
+            sideOfRoundabout = "Inside";
+
+        distance = (transform.position - closestRoundabout.position).magnitude;
     }
 
     private void OnTriggerEnter(Collider other)
