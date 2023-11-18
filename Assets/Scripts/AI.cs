@@ -33,9 +33,6 @@ public class AI : MonoBehaviour
     {
         direction = Vector3.zero;
 
-        if (forceStop)
-            currentSpeed -= Time.deltaTime * stopMultiplier;
-
         if (doJunction)
         {
             Junction();
@@ -61,7 +58,10 @@ public class AI : MonoBehaviour
             {
                 Roundabout();
             }
-        } 
+        }
+
+        if (forceStop)
+            currentSpeed -= Time.deltaTime;
 
         transform.position += direction;
     }
