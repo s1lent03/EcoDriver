@@ -2,6 +2,7 @@ using Palmmedia.ReportGenerator.Core.Reporting.Builders;
 using System.Collections;
 using System.Collections.Generic;
 using TreeEditor;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static UnityEngine.Rendering.DebugUI;
@@ -17,15 +18,30 @@ public class AutoCarController : MonoBehaviour
     public int GearNumber; //Gear 0 = Neutral; Gear 1 - 5; Gear 6 = Reverse
     private bool isReverse = false;
 
-    [Header("Velocity")]
-    public float velocity = 10f;
-    public float maxVelocity = 200f;
+
+    [Header("Velocity/Acceleration")]
+    public float velocity = 10f;      
+    [Space]
+    public float gear1MaxVelocity;
+    public float gear2MaxVelocity;
+    public float gear3MaxVelocity;
+    public float gear4MaxVelocity;
+    public float gear5MaxVelocity;
+    [Space]
+    public float AccelerationSpeed;
+    public float decelerationFactor;
+    [Space]
+    public float minGear1Velocity;
+    public float minGear2Velocity;
+    public float minGear3Velocity;
+    public float minGear4Velocity;
+    public float minGear5Velocity;
     [Space]
     public float speedKMH;
     private Vector3 lastPosition;
 
     [Header("Steer")]
-    public float steerVelocity = 10f;
+    public float steerVelocity;
     private float steerDirection = 0f;
     private Vector3 steerTurn;
 
@@ -37,9 +53,6 @@ public class AutoCarController : MonoBehaviour
         pad = Gamepad.current;
 
         lastPosition = transform.position;
-
-        //TEMPORARIO
-        velocity = 0f;
     }
 
     void Update()
@@ -67,9 +80,9 @@ public class AutoCarController : MonoBehaviour
     void FixedUpdate()
     {
         //Ponto de embraiagem
-        if (playerInput.actions["Clutch"].ReadValue<float>() > 0.35f && playerInput.actions["Clutch"].ReadValue<float>() < 0.75f)
+        if (playerInput.actions["Clutch"].ReadValue<float>() > 0.35f && playerInput.actions["Clutch"].ReadValue<float>() < 0.75f && GearNumber == 1)
         {
-            VibrateController(0.25f, 0.5f);
+            VibrateController(0.2f, 3f);
         }
         else
         {
@@ -80,15 +93,86 @@ public class AutoCarController : MonoBehaviour
         //Acelarar para a frente
         if (GearNumber > 0 && GearNumber < 6)
         {
-            Vector3 direction = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-            rb.MovePosition(direction + (transform.forward * (velocity * playerInput.actions["Accelerator"].ReadValue<float>()) * Time.deltaTime));
+            /*Vector3 direction = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            rb.MovePosition(direction + (transform.forward * (velocity * playerInput.actions["Accelerator"].ReadValue<float>()) * Time.deltaTime));*/
+
+            switch (GearNumber)
+            {
+                case 1:
+                    if (speedKMH > minGear1Velocity /*&& playerInput.actions["Clutch"].ReadValue<float>() < 0.75f*/)
+                    {
+                        Accelerate(1, gear1MaxVelocity, AccelerationSpeed, playerInput.actions["Accelerator"].ReadValue<float>());
+
+                        //Controlar vibração
+                        float vibrationLvl = CustomNormalize(speedKMH, minGear1Velocity, minGear2Velocity);
+                        VibrateController(vibrationLvl, vibrationLvl);
+                    }
+                    else if (playerInput.actions["Clutch"].ReadValue<float>() > 0.35f && playerInput.actions["Clutch"].ReadValue<float>() < 0.75f)
+                    {
+                        Accelerate(1, gear1MaxVelocity, AccelerationSpeed, playerInput.actions["Clutch"].ReadValue<float>() + 0.15f);
+                    }                    
+                    break;
+                case 2:
+                    if (speedKMH > minGear2Velocity /*&& playerInput.actions["Clutch"].ReadValue<float>() < 0.75f*/)
+                    {
+                        Accelerate(1, gear2MaxVelocity, AccelerationSpeed, playerInput.actions["Accelerator"].ReadValue<float>());
+
+                        //Controlar vibração
+                        float vibrationLvl = CustomNormalize(speedKMH, minGear2Velocity, minGear3Velocity);
+                        VibrateController(vibrationLvl, vibrationLvl);
+                    }                    
+                    break;
+                case 3:
+                    if (speedKMH > minGear3Velocity /*&& playerInput.actions["Clutch"].ReadValue<float>() < 0.75f*/)
+                    {
+                        Accelerate(1, gear3MaxVelocity, AccelerationSpeed, playerInput.actions["Accelerator"].ReadValue<float>());
+
+                        //Controlar vibração
+                        float vibrationLvl = CustomNormalize(speedKMH, minGear3Velocity, minGear4Velocity);
+                        VibrateController(vibrationLvl, vibrationLvl);
+                    }                    
+                    break;
+                case 4:
+                    if (speedKMH > minGear4Velocity /*&& playerInput.actions["Clutch"].ReadValue<float>() < 0.75f*/)
+                    {
+                        Accelerate(1, gear4MaxVelocity, AccelerationSpeed, playerInput.actions["Accelerator"].ReadValue<float>());
+
+                        //Controlar vibração
+                        float vibrationLvl = CustomNormalize(speedKMH, minGear4Velocity, minGear5Velocity);
+                        VibrateController(vibrationLvl, vibrationLvl);
+                    }                    
+                    break;
+                case 5:
+                    if (speedKMH > minGear5Velocity /*&& playerInput.actions["Clutch"].ReadValue<float>() < 0.75f*/)
+                    {
+                        Accelerate(1, gear5MaxVelocity, AccelerationSpeed, playerInput.actions["Accelerator"].ReadValue<float>());
+
+                        //Controlar vibração
+                        float vibrationLvl = CustomNormalize(speedKMH, minGear5Velocity, 120f);
+                        VibrateController(vibrationLvl, vibrationLvl);
+                    }                   
+                    break;
+            }
         }
 
         //Acelarar para trás
         if (GearNumber == 6)
         {
-            Vector3 direction = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-            rb.MovePosition(direction - (transform.forward * (velocity * playerInput.actions["Accelerator"].ReadValue<float>()) * Time.deltaTime));
+            /*Vector3 direction = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            rb.MovePosition(direction - (transform.forward * (velocity * playerInput.actions["Accelerator"].ReadValue<float>()) * Time.deltaTime));*/
+
+            if (speedKMH > minGear1Velocity)
+            {
+                Accelerate(-1, gear1MaxVelocity, AccelerationSpeed, playerInput.actions["Accelerator"].ReadValue<float>());
+
+                //Controlar vibração
+                float vibrationLvl = CustomNormalize(speedKMH, minGear1Velocity, minGear2Velocity);
+                VibrateController(vibrationLvl, vibrationLvl);
+            }
+            else if (playerInput.actions["Clutch"].ReadValue<float>() > 0.35f && playerInput.actions["Clutch"].ReadValue<float>() < 0.75f)
+            {
+                Accelerate(-1, gear1MaxVelocity, AccelerationSpeed, playerInput.actions["Clutch"].ReadValue<float>());
+            }
         }
 
         //DIREÇÃO
@@ -123,10 +207,42 @@ public class AutoCarController : MonoBehaviour
         float speedMS = displacement.magnitude / Time.deltaTime;
         speedKMH = speedMS * 3.6f;
 
-        lastPosition = currentPosition;
+        lastPosition = currentPosition;  
+    }
 
-        //TEMPORARIO
-        velocity += Time.deltaTime*4;
+    //Normalizar valores
+    public float CustomNormalize(float value, float min, float max)
+    {
+        // Ensure that the value is clamped between min and max
+        value = Mathf.Clamp(value, min, max);
+
+        // Perform linear interpolation
+        float normalizedValue = (value - min) / (max - min);
+
+        return normalizedValue;
+    }
+
+    //Faz o carro acelarar
+    public void Accelerate(int direction, float maxVelocity, float accelerationSpeed, float accelerationInput)
+    {
+        //Calcular a velocidade pretendida
+        float targetVelocity = accelerationInput * maxVelocity;
+
+        //Interpolar entre a velocidade atual e a pretendida
+        float smoothVelocity;
+        if (Mathf.Approximately(accelerationInput, 0f))
+        {
+            //Desacelarar
+            smoothVelocity = Mathf.MoveTowards(rb.velocity.magnitude, 0f, Time.fixedDeltaTime * decelerationFactor);
+        }
+        else
+        {
+            //Acelarar
+            smoothVelocity = Mathf.SmoothStep(rb.velocity.magnitude, targetVelocity, Time.fixedDeltaTime * accelerationSpeed);
+        }
+
+        //Definir velocidade
+        rb.velocity = transform.forward * (smoothVelocity * direction);
     }
 
     //Faz o comando vibrar
