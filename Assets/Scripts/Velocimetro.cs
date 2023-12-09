@@ -20,8 +20,15 @@ public class Velocimetro : MonoBehaviour
     private float speed = 0.0f;
 
     private void Update()
-    {
-        speed = Vehicle.GetComponent<AutoCarController>().speedKMH;
+    {       
+        if (Vehicle != null)
+        {
+            speed = Vehicle.GetComponent<AutoCarController>().speedKMH;
+        }
+        else
+        {
+            Vehicle = FindObjectByPartialName("AutomaticCar");
+        }
 
         //Limita a velocidade exibida ao valor máximo (260 km/h)
         speed = Mathf.Min(speed, maxSpeed);
@@ -33,6 +40,21 @@ public class Velocimetro : MonoBehaviour
         //Rodar a seta do velocimetro
         if (arrow != null)
             arrow.localEulerAngles = new Vector3(0, 0, Mathf.Lerp(minSpeedArrowAngle, maxSpeedArrowAngle, speed / maxSpeed));
+    }
+
+    GameObject FindObjectByPartialName(string partialName)
+    {
+        GameObject[] allObjects = GameObject.FindObjectsOfType<GameObject>();
+
+        foreach (GameObject obj in allObjects)
+        {
+            if (obj.name.Contains(partialName))
+            {
+                return obj;
+            }
+        }
+
+        return null;
     }
 }
 

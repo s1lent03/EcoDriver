@@ -18,7 +18,14 @@ public class UIManager : MonoBehaviour
 
     void Update()
     {
-        gearNumber = Vehicle.GetComponent<AutoCarController>().GearNumber;
+        if (Vehicle != null)
+        {
+            gearNumber = Vehicle.GetComponent<AutoCarController>().GearNumber;
+        }
+        else
+        {
+            Vehicle = FindObjectByPartialName("AutomaticCar");
+        }
 
         if (gearNumber > 0 && gearNumber < 6)
             GearText.text = gearNumber.ToString();
@@ -43,5 +50,20 @@ public class UIManager : MonoBehaviour
         float mappedY = (1 - normalizedX) * yMin + normalizedX * yMax;
 
         return mappedY;
+    }
+
+    GameObject FindObjectByPartialName(string partialName)
+    {
+        GameObject[] allObjects = GameObject.FindObjectsOfType<GameObject>();
+
+        foreach (GameObject obj in allObjects)
+        {
+            if (obj.name.Contains(partialName))
+            {
+                return obj;
+            }
+        }
+
+        return null;
     }
 }

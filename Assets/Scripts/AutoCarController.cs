@@ -38,12 +38,16 @@ public class AutoCarController : MonoBehaviour
     public float minGear5Velocity;
     [Space]
     public float speedKMH;
+    public float accelerationFactor;
     private Vector3 lastPosition;
 
     [Header("Steer")]
     public float steerVelocity;
     private float steerDirection = 0f;
     private Vector3 steerTurn;
+
+    [Header("Gravity")]
+    public float gravityForce = 9.8f;
 
     void Start()
     {
@@ -58,7 +62,7 @@ public class AutoCarController : MonoBehaviour
     void Update()
     {
         //Se a embraiagem tiver a fundo sobe uma mudança
-        if (playerInput.actions["UpGear"].triggered && GearNumber < 6 && playerInput.actions["Clutch"].ReadValue<float>() == 1)
+        if (playerInput.actions["UpGear"].triggered && GearNumber < 5 && playerInput.actions["Clutch"].ReadValue<float>() == 1)
             GearNumber += 1;
 
         //Se a embraiagem tiver a fundo desce uma mudança
@@ -89,6 +93,26 @@ public class AutoCarController : MonoBehaviour
             StopVibrateController();
         }
 
+        //GRAVIDADE
+        ApplyGravity();
+
+        //TRAVAR
+        if (playerInput.actions["Brake"].IsPressed())
+        {
+            if (GearNumber == 6)
+            {
+                decelerationFactor = 5;
+                rb.velocity = transform.forward * (Decelerate() * -1);
+            }
+            else
+            {
+                decelerationFactor = 5;
+                rb.velocity = transform.forward * (Decelerate());
+            }
+        }
+        else
+            decelerationFactor = 2;
+
         //ACELARAR
         //Acelarar para a frente
         if (GearNumber > 0 && GearNumber < 6)
@@ -99,7 +123,7 @@ public class AutoCarController : MonoBehaviour
             switch (GearNumber)
             {
                 case 1:
-                    if (speedKMH > minGear1Velocity /*&& playerInput.actions["Clutch"].ReadValue<float>() < 0.75f*/)
+                    if (speedKMH > minGear1Velocity && playerInput.actions["Clutch"].ReadValue<float>() < 0.75f)
                     {
                         Accelerate(1, gear1MaxVelocity, AccelerationSpeed, playerInput.actions["Accelerator"].ReadValue<float>());
 
@@ -177,11 +201,11 @@ public class AutoCarController : MonoBehaviour
 
         //DIREÇÃO
         //Direção para a frente
-        if (playerInput.actions["Steer"].IsPressed() && GearNumber > 0 && GearNumber < 6 && !(playerInput.actions["Accelerator"].ReadValue<float>() == 0))
+        if (playerInput.actions["Steer"].IsPressed() && GearNumber > 0 && GearNumber < 6 && speedKMH > 0)
         {
             Vector2 move = playerInput.actions["Steer"].ReadValue<Vector2>();
 
-            steerDirection = move.x * steerVelocity * (velocity * playerInput.actions["Accelerator"].ReadValue<float>());
+            steerDirection = move.x * steerVelocity * (velocity * (playerInput.actions["Accelerator"].ReadValue<float>() + 1));
             steerTurn = new Vector3(transform.rotation.x, steerDirection, transform.rotation.z);
             transform.Rotate(steerTurn * Time.deltaTime);
         }
@@ -189,7 +213,7 @@ public class AutoCarController : MonoBehaviour
             steerDirection = 0;
 
         //Direção para a trás
-        if (playerInput.actions["Steer"].IsPressed() && GearNumber == 6 && !(playerInput.actions["Accelerator"].ReadValue<float>() == 0))
+        if (playerInput.actions["Steer"].IsPressed() && GearNumber == 6 && speedKMH > 0)
         {
             Vector2 move = playerInput.actions["Steer"].ReadValue<Vector2>();
 
@@ -208,6 +232,13 @@ public class AutoCarController : MonoBehaviour
         speedKMH = speedMS * 3.6f;
 
         lastPosition = currentPosition;  
+    }
+
+    void ApplyGravity()
+    {
+        // Simulate gravity by adjusting the car's position
+        Vector3 gravityVector = Vector3.down * gravityForce;
+        transform.position += gravityVector * Time.deltaTime;
     }
 
     //Normalizar valores
@@ -233,16 +264,22 @@ public class AutoCarController : MonoBehaviour
         if (Mathf.Approximately(accelerationInput, 0f))
         {
             //Desacelarar
-            smoothVelocity = Mathf.MoveTowards(rb.velocity.magnitude, 0f, Time.fixedDeltaTime * decelerationFactor);
+            smoothVelocity = Decelerate();
         }
         else
         {
             //Acelarar
-            smoothVelocity = Mathf.SmoothStep(rb.velocity.magnitude, targetVelocity, Time.fixedDeltaTime * accelerationSpeed);
+            smoothVelocity = Mathf.SmoothStep(rb.velocity.magnitude, targetVelocity, Time.fixedDeltaTime * accelerationSpeed * accelerationFactor);
         }
 
         //Definir velocidade
-        rb.velocity = transform.forward * (smoothVelocity * direction);
+        rb.velocity = transform.forward * (smoothVelocity * direction);        
+    }
+
+    //Faz o carro desacelarar
+    public float Decelerate()
+    {
+        return Mathf.MoveTowards(rb.velocity.magnitude, 0f, Time.fixedDeltaTime * decelerationFactor);
     }
 
     //Faz o comando vibrar
