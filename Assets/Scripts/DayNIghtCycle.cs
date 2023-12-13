@@ -22,7 +22,9 @@ public class DayNIghtCycle : MonoBehaviour
     {
         sunLightData = Sun.GetComponent<HDAdditionalLightData>();
         moonLightData = Moon.GetComponent<HDAdditionalLightData>();
-        TimeHours = 17;
+
+        float rand = UnityEngine.Random.Range(7f, 19.5f);
+        TimeHours = rand;
     }
 
     void Update()
@@ -31,8 +33,7 @@ public class DayNIghtCycle : MonoBehaviour
         TimeHours += Time.time * 0.0001f;
         if (TimeHours >= 24)
             TimeHours = 0;*/
-
-
+       
         DateTime currentTime = DateTime.Now;
         float timeFloat = currentTime.Hour + (float)currentTime.Minute / 60;
 

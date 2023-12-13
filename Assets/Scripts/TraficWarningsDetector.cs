@@ -26,6 +26,7 @@ public class TraficWarningsDetector : MonoBehaviour
     [SerializeField] GameObject BotGreenLight;
     [Space]
     bool canRunChangeAgain = true;
+    [SerializeField] bool invertSignal;
 
     [Header("Others")]
     [SerializeField] GameObject Managers;
@@ -40,10 +41,16 @@ public class TraficWarningsDetector : MonoBehaviour
     void Update()
     {
         if (IsTrafficLight && canRunChangeAgain)
-            StartCoroutine(ChangeTrafficLights());
+        {
+            if (!invertSignal)
+                StartCoroutine(ChangeTrafficLights1());
+            else
+                StartCoroutine(ChangeTrafficLights2());
+        }
+            
     }
 
-    IEnumerator ChangeTrafficLights()
+    IEnumerator ChangeTrafficLights1()
     {
         canRunChangeAgain = false;
 
@@ -89,6 +96,56 @@ public class TraficWarningsDetector : MonoBehaviour
         BotGreenLight.SetActive(false);
 
         yield return new WaitForSeconds(3);
+
+        canRunChangeAgain = true;
+    }
+
+    IEnumerator ChangeTrafficLights2()
+    {
+        canRunChangeAgain = false;
+
+        TopRedLight.SetActive(false);
+        TopYellowLight.SetActive(false);
+        TopGreenLight.SetActive(true);
+
+        MidRedLight.SetActive(true);
+        MidGreenLight.SetActive(false);
+
+        BotRedLight.SetActive(false);
+        BotYellowLight.SetActive(false);
+        BotGreenLight.SetActive(true);
+
+        canCarGo = true;
+
+        yield return new WaitForSeconds(8);
+
+        TopRedLight.SetActive(false);
+        TopYellowLight.SetActive(true);
+        TopGreenLight.SetActive(false);
+
+        MidRedLight.SetActive(true);
+        MidGreenLight.SetActive(false);
+
+        BotRedLight.SetActive(false);
+        BotYellowLight.SetActive(true);
+        BotGreenLight.SetActive(false);
+
+        yield return new WaitForSeconds(3);
+
+        TopRedLight.SetActive(true);
+        TopYellowLight.SetActive(false);
+        TopGreenLight.SetActive(false);
+
+        MidRedLight.SetActive(false);
+        MidGreenLight.SetActive(true);
+
+        BotRedLight.SetActive(true);
+        BotYellowLight.SetActive(false);
+        BotGreenLight.SetActive(false);
+
+        canCarGo = false;
+
+        yield return new WaitForSeconds(8);
 
         canRunChangeAgain = true;
     }
