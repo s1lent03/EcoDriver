@@ -101,12 +101,12 @@ public class AutoCarController : MonoBehaviour
         {
             if (GearNumber == 6)
             {
-                decelerationFactor = 5;
+                decelerationFactor = 6;
                 rb.velocity = transform.forward * (Decelerate() * -1);
             }
             else
             {
-                decelerationFactor = 5;
+                decelerationFactor = 6;
                 rb.velocity = transform.forward * (Decelerate());
             }
         }
