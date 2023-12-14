@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 using DG.Tweening;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -48,6 +49,8 @@ public class GameManager : MonoBehaviour
             Transform currentCarTransform = playerCar.transform;
             Destroy(playerCar.gameObject);
             playerCar = Instantiate(carPrefab, currentCarTransform.position, currentCarTransform.rotation);
+
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
         if (isOnCenterLine)
