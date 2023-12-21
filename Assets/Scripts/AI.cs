@@ -57,6 +57,9 @@ public class AI : MonoBehaviour
             } else if (paths[paths.Count - 1].CompareTag("Roundabout"))
             {
                 Roundabout();
+            } else if (paths[paths.Count - 1].CompareTag("Curve"))
+            {
+                Curve();
             }
         }
 
@@ -200,6 +203,11 @@ public class AI : MonoBehaviour
             sideOfRoundabout = "Inside";
 
         distance = (transform.position - closestRoundabout.position).magnitude;
+    }
+
+    private void Curve()
+    {
+        road = paths[paths.Count - 1].GetComponent<RoadSelector>().obtainRandomRoad();
     }
 
     private void OnTriggerEnter(Collider other)

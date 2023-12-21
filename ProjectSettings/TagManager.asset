@@ -9,6 +9,7 @@ TagManager:
   - Junction
   - Car
   - Roundabout
+  - Curve
   layers:
   - Default
   - TransparentFX

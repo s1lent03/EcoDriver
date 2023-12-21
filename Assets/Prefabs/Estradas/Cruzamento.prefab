@@ -147,6 +147,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsCentralLine: 1
   IsStopSign: 0
+  IsTrafficLight: 0
+  TopRedLight: {fileID: 0}
+  TopYellowLight: {fileID: 0}
+  TopGreenLight: {fileID: 0}
+  MidRedLight: {fileID: 0}
+  MidGreenLight: {fileID: 0}
+  BotRedLight: {fileID: 0}
+  BotYellowLight: {fileID: 0}
+  BotGreenLight: {fileID: 0}
+  invertSignal: 0
   Managers: {fileID: 0}
 --- !u!1 &1431643272636972789
 GameObject:
@@ -295,6 +305,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsCentralLine: 1
   IsStopSign: 0
+  IsTrafficLight: 0
+  TopRedLight: {fileID: 0}
+  TopYellowLight: {fileID: 0}
+  TopGreenLight: {fileID: 0}
+  MidRedLight: {fileID: 0}
+  MidGreenLight: {fileID: 0}
+  BotRedLight: {fileID: 0}
+  BotYellowLight: {fileID: 0}
+  BotGreenLight: {fileID: 0}
+  invertSignal: 0
   Managers: {fileID: 0}
 --- !u!1 &2638383710103708325
 GameObject:
@@ -1081,6 +1101,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsCentralLine: 1
   IsStopSign: 0
+  IsTrafficLight: 0
+  TopRedLight: {fileID: 0}
+  TopYellowLight: {fileID: 0}
+  TopGreenLight: {fileID: 0}
+  MidRedLight: {fileID: 0}
+  MidGreenLight: {fileID: 0}
+  BotRedLight: {fileID: 0}
+  BotYellowLight: {fileID: 0}
+  BotGreenLight: {fileID: 0}
+  invertSignal: 0
   Managers: {fileID: 0}
 --- !u!1 &6481585027595260851
 GameObject:
@@ -1753,4 +1783,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsCentralLine: 1
   IsStopSign: 0
+  IsTrafficLight: 0
+  TopRedLight: {fileID: 0}
+  TopYellowLight: {fileID: 0}
+  TopGreenLight: {fileID: 0}
+  MidRedLight: {fileID: 0}
+  MidGreenLight: {fileID: 0}
+  BotRedLight: {fileID: 0}
+  BotYellowLight: {fileID: 0}
+  BotGreenLight: {fileID: 0}
+  invertSignal: 0
   Managers: {fileID: 0}
