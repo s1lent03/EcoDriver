@@ -20,23 +20,23 @@ public class UIManager : MonoBehaviour
     {
         if (Vehicle != null)
         {
-            gearNumber = Vehicle.GetComponent<AutoCarController>().GearNumber;
+            gearNumber = Vehicle.GetComponent<CarController>().GearNumber;
         }
         else
         {
-            Vehicle = FindObjectByPartialName("AutomaticCar");
+            Vehicle = FindObjectByPartialName("Car");
         }
 
-        if (gearNumber > 0 && gearNumber < 6)
+        if (gearNumber > 0 && gearNumber < 7)
             GearText.text = gearNumber.ToString();
 
         if (gearNumber == 0)
             GearText.text = "N";
 
-        if (gearNumber == 6)
+        if (gearNumber == 7)
             GearText.text = "R";
 
-        float speed = Vehicle.GetComponent<AutoCarController>().speedKMH;
+        float speed = Vehicle.GetComponent<CarController>().speedKMH;
         FastVectors.sizeDelta = new Vector2(ChangeFastVectorsSize(speed, 0, 260, 4800, 1920), ChangeFastVectorsSize(speed, 0, 260, 2700, 1080));
     }
 

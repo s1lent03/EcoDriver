@@ -61,12 +61,12 @@
                 },
                 {
                     "name": "Brake",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "520c10b5-e3e7-464a-8be7-6fcda223a46f",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "ResetCar",
@@ -81,6 +81,33 @@
                     "name": "ShowInfo",
                     "type": "Button",
                     "id": "220aaeb7-134c-4bd0-ad52-b5e02f5a869a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftBlinker",
+                    "type": "Button",
+                    "id": "2934acdd-b0bc-45d1-b05f-eaa01a69d0cf",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightBlinker",
+                    "type": "Button",
+                    "id": "55c2cf9d-9d5f-418c-994a-a70349c0d4ce",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "HeadLights",
+                    "type": "Button",
+                    "id": "739acf99-2531-42f0-b8a6-70b9de1212f8",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -404,6 +431,72 @@
                     "processors": "",
                     "groups": "",
                     "action": "ShowInfo",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d7a90c75-cf88-4d3e-bf20-7c28a45862d8",
+                    "path": "<DualShockGamepad>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftBlinker",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7f9b77ee-ba7f-4d73-9cc6-f784fee7d4ae",
+                    "path": "<XInputController>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftBlinker",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bcc70bfc-639b-4988-a0fa-a2b2f2f4b857",
+                    "path": "<DualShockGamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RightBlinker",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "082656ce-4444-4f40-9747-0f740a7ce608",
+                    "path": "<XInputController>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RightBlinker",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "78865938-cc3b-4921-aa9b-0ce9589a25a6",
+                    "path": "<DualShockGamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "HeadLights",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "09258f27-6cb5-46e5-8590-cdb140d6a690",
+                    "path": "<XInputController>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "HeadLights",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

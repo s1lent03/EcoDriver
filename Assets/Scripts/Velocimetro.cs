@@ -23,11 +23,11 @@ public class Velocimetro : MonoBehaviour
     {       
         if (Vehicle != null)
         {
-            speed = Vehicle.GetComponent<AutoCarController>().speedKMH;
+            speed = Vehicle.GetComponent<CarController>().speedKMH;
         }
         else
         {
-            Vehicle = FindObjectByPartialName("AutomaticCar");
+            Vehicle = FindObjectByPartialName("Car");
         }
 
         //Limita a velocidade exibida ao valor máximo (260 km/h)

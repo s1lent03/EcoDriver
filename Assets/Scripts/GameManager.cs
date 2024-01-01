@@ -44,14 +44,14 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         //Reset ao carro
-        if (playerInput.actions["ResetCar"].triggered)
+        /*if (playerInput.actions["ResetCar"].triggered)
         {
             Transform currentCarTransform = playerCar.transform;
             Destroy(playerCar.gameObject);
             playerCar = Instantiate(carPrefab, currentCarTransform.position, currentCarTransform.rotation);
 
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
+        }*/
 
         if (isOnCenterLine)
         {
