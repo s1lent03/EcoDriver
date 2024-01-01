@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7116855949211986914}
   - component: {fileID: 4981211598245273384}
   - component: {fileID: 3265325458334925020}
+  - component: {fileID: 6218490619751958100}
   m_Layer: 0
   m_Name: Arvore3
   m_TagString: Untagged
@@ -112,3 +113,17 @@ LODGroup:
     renderers:
     - renderer: {fileID: 4981211598245273384}
   m_Enabled: 1
+--- !u!136 &6218490619751958100
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6782471610698350333}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.0064852824
+  m_Height: 0.10035368
+  m_Direction: 1
+  m_Center: {x: 0.0038909272, y: 0.049338676, z: 0.0000015369343}

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 1512.6826, g: 1288.6152, b: 1298.835, a: 1}
+  m_IndirectSpecularColor: {r: 1518.3896, g: 1293.8633, b: 1302.3037, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4504,9 +4504,11 @@ MonoBehaviour:
   timeBetweenBlinks: 0.8
   leftHeadLight: {fileID: 90090880}
   rightHeadLight: {fileID: 1083681899}
-  estimatedEmissions: 0
+  averageEmissions: 0
   minEmissionLimit: 7
   maxEmissionLimit: 8
+  totalEmissions: 0
+  totalDistance: 0
   isGrounded: 0
 --- !u!114 &652537292
 MonoBehaviour:
@@ -4568,8 +4570,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.20033264, y: 1.1702256, z: 4.6220627}
-  m_Center: {x: -0.89460754, y: 0.27328157, z: 0.005191803}
+  m_Size: {x: 0.20033264, y: 1.299192, z: 4.6220627}
+  m_Center: {x: -0.89460754, y: 0.20879838, z: 0.005191803}
 --- !u!65 &652537295
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4581,8 +4583,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.5252151, y: 0.8230869, z: 0.6074753}
-  m_Center: {x: -0.0027656555, y: 0.08845654, z: -1.9819832}
+  m_Size: {x: 1.5252151, y: 0.9520533, z: 0.6074753}
+  m_Center: {x: -0.0027656555, y: 0.023973346, z: -1.9819832}
 --- !u!65 &652537296
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4594,8 +4596,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.5252151, y: 0.8230869, z: 1.3593521}
-  m_Center: {x: -0.0027656555, y: 0.08845654, z: 1.6502647}
+  m_Size: {x: 1.5252151, y: 0.96638286, z: 1.3593521}
+  m_Center: {x: -0.0027656555, y: 0.01680857, z: 1.6502647}
 --- !u!65 &652537297
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4607,8 +4609,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.20033264, y: 1.1702256, z: 4.6220627}
-  m_Center: {x: 0.89663696, y: 0.27328157, z: 0.005191803}
+  m_Size: {x: 0.20033264, y: 1.299192, z: 4.6220627}
+  m_Center: {x: 0.89663696, y: 0.2087984, z: 0.005191803}
 --- !u!1001 &654929802
 PrefabInstance:
   m_ObjectHideFlags: 0

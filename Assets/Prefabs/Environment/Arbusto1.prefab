@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7368309592031149639}
   - component: {fileID: 4730338446148520589}
   - component: {fileID: 1279166905333355285}
+  - component: {fileID: 2342993241395720085}
   m_Layer: 0
   m_Name: Arbusto1
   m_TagString: Untagged
@@ -111,3 +112,16 @@ LODGroup:
     renderers:
     - renderer: {fileID: 4730338446148520589}
   m_Enabled: 1
+--- !u!65 &2342993241395720085
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6531756238322133848}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.0070579476, y: 0.0060000024, z: 0.0105710095}
+  m_Center: {x: 0.0037064154, y: 0.0018633015, z: -0.0006811216}

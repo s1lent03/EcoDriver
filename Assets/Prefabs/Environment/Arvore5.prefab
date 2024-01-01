@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6489600309461340905}
   - component: {fileID: 9073423187733489187}
   - component: {fileID: 8860336014631857117}
+  - component: {fileID: 6292050275760925677}
   m_Layer: 0
   m_Name: Arvore5
   m_TagString: Untagged
@@ -112,3 +113,17 @@ LODGroup:
     renderers:
     - renderer: {fileID: 9073423187733489187}
   m_Enabled: 1
+--- !u!136 &6292050275760925677
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7416225861336696822}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.006926351
+  m_Height: 0.085804395
+  m_Direction: 1
+  m_Center: {x: 0.0045706886, y: 0.042064052, z: 0.0003177232}
