@@ -404,7 +404,7 @@
                 {
                     "name": "",
                     "id": "2cc5e492-0eaf-46a0-99fe-0bfd70d26729",
-                    "path": "<Keyboard>/tab",
+                    "path": "<HID::Logitech G29 Driving Force Racing Wheel>/button9",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -458,6 +458,17 @@
                 },
                 {
                     "name": "",
+                    "id": "5a380c69-6df1-4108-aa57-4c5d5b58cc4a",
+                    "path": "<HID::Logitech G29 Driving Force Racing Wheel>/stick/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftBlinker",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "bcc70bfc-639b-4988-a0fa-a2b2f2f4b857",
                     "path": "<DualShockGamepad>/dpad/right",
                     "interactions": "",
@@ -493,6 +504,17 @@
                     "name": "",
                     "id": "09258f27-6cb5-46e5-8590-cdb140d6a690",
                     "path": "<XInputController>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "HeadLights",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e6f2ca46-d306-4ed0-9490-a00d0b412865",
+                    "path": "<HID::Logitech G29 Driving Force Racing Wheel>/stick/up",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements.Experimental;
 
 public class CarController : MonoBehaviour
 {
@@ -16,6 +18,7 @@ public class CarController : MonoBehaviour
 
     [Header("Gear Shift")]
     public int GearNumber; //Gear 0 = Neutral; Gear 1 - 6; Gear 7 = Reverse
+    public float ClutchValue;
     private bool isReverse = false;
 
     [Header("Gear Velocities")]
@@ -37,7 +40,8 @@ public class CarController : MonoBehaviour
     [SerializeField] float velocity;
     [SerializeField] float turnSpeed;
     [SerializeField] public float speedKMH;
-    [SerializeField] float brake;
+    float brake;
+    [SerializeField] float brakeFactor;
     [Space]    
     float moveInput;
     float turnInput;
@@ -93,6 +97,27 @@ public class CarController : MonoBehaviour
     bool isBlinking = false;
     bool calculateEmissions = true;
 
+    [Header("G29 Wheel")]
+    static LogitechGSDK.DIJOYSTATE2ENGINES rec;
+    float previousButton4Value = 0;
+    float currentButton4Value = 0;
+
+    float previousButton5Value = 0;
+    float currentButton5Value = 0;
+
+    /*float previousButton8Value = 0;
+    float currentButton8Value = 0;
+
+    float previousButton9Value = 0;
+    float currentButton9Value = 0;*/
+
+    float previousLeftPadValue = 0;
+    float currentLeftPadValue = -1;
+
+    float previousRightPadValue = 0;
+    float currentRightPadValue = -1;
+
+    float currentUpPadValue = -1;
 
     void Start()
     {
@@ -102,22 +127,53 @@ public class CarController : MonoBehaviour
 
         //Separar esfera do carro
         sphereRb.transform.parent = null;
+        
     }
 
     void Update()
     {
+        //G29
+        rec = LogitechGSDK.LogiGetStateUnity(0);
+
+        currentButton4Value = rec.rgbButtons[4];
+        currentButton5Value = rec.rgbButtons[5];
+        currentButton8Value = rec.rgbButtons[8];
+        currentButton9Value = rec.rgbButtons[9];
+
+        if (rec.rgdwPOV[0] == 27000)
+            currentLeftPadValue = 128;
+        else
+            currentLeftPadValue = -1;
+
+        if (rec.rgdwPOV[0] == 9000)
+            currentRightPadValue = 128;
+        else
+            currentRightPadValue = -1;
+
+        if (rec.rgdwPOV[0] == 0)
+            currentUpPadValue = 128;
+        else
+            currentUpPadValue = -1;
+
         //Se a embraiagem tiver a fundo sobe uma mudança
-        if (playerInput.actions["UpGear"].triggered && GearNumber < 6 && playerInput.actions["Clutch"].ReadValue<float>() == 1)
+        if ((playerInput.actions["UpGear"].triggered || (currentButton4Value == 128 && previousButton4Value != 128)) && GearNumber < 6 && ClutchValue > 0.9f)
             GearNumber += 1;
 
+        previousButton4Value = currentButton4Value;
+
         //Se a embraiagem tiver a fundo desce uma mudança
-        if (playerInput.actions["DownGear"].triggered && GearNumber > 0 && playerInput.actions["Clutch"].ReadValue<float>() == 1)
+        if ((playerInput.actions["DownGear"].triggered || (currentButton5Value == 128 && previousButton5Value != 128)) && GearNumber >= 0 && ClutchValue > 0.9f)
             GearNumber -= 1;
 
-        //Troca mais facil entre qualquer mudança e reverse. Caso esteja já em reverse, passa para 1ª
-        if (playerInput.actions["Reverse"].triggered && playerInput.actions["Clutch"].ReadValue<float>() == 1 && isReverse == false)
+        if (GearNumber == -1)
             GearNumber = 7;
-        else if (playerInput.actions["Reverse"].triggered && playerInput.actions["Clutch"].ReadValue<float>() == 1 && isReverse == true)
+
+        previousButton5Value = currentButton5Value;
+
+        //Troca mais facil entre qualquer mudança e reverse. Caso esteja já em reverse, passa para 1ª
+        if (playerInput.actions["Reverse"].triggered && ClutchValue == 1 && isReverse == false)
+            GearNumber = 7;
+        else if (playerInput.actions["Reverse"].triggered && ClutchValue == 1 && isReverse == true)
             GearNumber = 1;
 
         if (GearNumber == 7)
@@ -157,10 +213,12 @@ public class CarController : MonoBehaviour
 
         //PISCAS
         //Esquerda
-        if (playerInput.actions["LeftBlinker"].triggered && !leftBlinkerOn)
+        if ((playerInput.actions["LeftBlinker"].triggered || (currentLeftPadValue == 128 && previousLeftPadValue != 128)) && !leftBlinkerOn)
             leftBlinkerOn = true;
-        else if (playerInput.actions["LeftBlinker"].triggered && leftBlinkerOn)
+        else if ((playerInput.actions["LeftBlinker"].triggered || (currentLeftPadValue == 128 && previousLeftPadValue != 128)) && leftBlinkerOn)
             leftBlinkerOn = false;
+
+        previousLeftPadValue = currentLeftPadValue;
 
         if (leftBlinkerOn)
         {       
@@ -172,10 +230,12 @@ public class CarController : MonoBehaviour
         }
 
         //Direita
-        if (playerInput.actions["RightBlinker"].triggered && !rightBlinkerOn)
+        if ((playerInput.actions["RightBlinker"].triggered || (currentRightPadValue == 128 && previousRightPadValue != 128)) && !rightBlinkerOn)
             rightBlinkerOn = true;
-        else if (playerInput.actions["RightBlinker"].triggered && rightBlinkerOn)
+        else if ((playerInput.actions["RightBlinker"].triggered || (currentRightPadValue == 128 && previousRightPadValue != 128)) && rightBlinkerOn)
             rightBlinkerOn = false;
+
+        previousRightPadValue = currentRightPadValue;
 
         if (rightBlinkerOn)
         {
@@ -187,7 +247,7 @@ public class CarController : MonoBehaviour
         }
 
         //Máximos
-        if (playerInput.actions["HeadLights"].IsPressed())
+        if (playerInput.actions["HeadLights"].IsPressed() || currentUpPadValue == 128)
         {
             leftHeadLight.SetActive(true);
             rightHeadLight.SetActive(true);
@@ -229,7 +289,7 @@ public class CarController : MonoBehaviour
     void FixedUpdate()
     {
         //Ponto de embraiagem
-        if (playerInput.actions["Clutch"].ReadValue<float>() > 0.35f && playerInput.actions["Clutch"].ReadValue<float>() < 0.75f && GearNumber == 1 && speedKMH < 10)
+        if (ClutchValue > 0.35f && ClutchValue < 0.75f && GearNumber == 1 && speedKMH < 10)
         {
             VibrateController(0.2f, 3f);
         }
@@ -238,9 +298,47 @@ public class CarController : MonoBehaviour
             StopVibrateController();
         }
 
-        //Ler valor de acelaração / direção
-        moveInput = playerInput.actions["Accelerator"].ReadValue<float>();
-        turnInput = playerInput.actions["Steer"].ReadValue<Vector2>().x;
+        //LER VALORES
+        //Ler acelaração
+        if (Input.GetJoystickNames()[0] == "G29 Driving Force Racing Wheel")
+        {
+            moveInput = ((-rec.lY / 32760f) + 1) / 2;
+        }
+        else
+        {
+            moveInput = playerInput.actions["Accelerator"].ReadValue<float>();
+        }
+
+        //Ler direção
+        if (Input.GetJoystickNames()[0] == "G29 Driving Force Racing Wheel")
+        {
+            turnInput = rec.lX / 32760f;
+        }
+        else
+        {
+            turnInput = playerInput.actions["Steer"].ReadValue<Vector2>().x;
+        }
+
+        //Ler Embraiagem
+        if (Input.GetJoystickNames()[0] == "G29 Driving Force Racing Wheel")
+        {
+            ClutchValue = ((-rec.rglSlider[0] / 32760f) + 1) / 2;
+        }
+        else
+        {
+            ClutchValue = playerInput.actions["Clutch"].ReadValue<float>();
+        }
+
+        //Ler travões
+        if (Input.GetJoystickNames()[0] == "G29 Driving Force Racing Wheel")
+        {
+            brake = ((-rec.lRz / 32760f) + 1) / 2;
+            Debug.Log(brake);
+        }
+        else
+        {
+            brake = 1;
+        }
 
         //ACELARAR
         //Acelarar para a frente
@@ -252,43 +350,43 @@ public class CarController : MonoBehaviour
             switch (GearNumber)
             {
                 case 1:
-                    if (speedKMH > minGear1Velocity && playerInput.actions["Clutch"].ReadValue<float>() < 0.75f)
+                    if (speedKMH > minGear1Velocity && ClutchValue < 0.75f)
                     {
-                        Accelerate(1, gear1MaxVelocity, AccelerationSpeed, playerInput.actions["Accelerator"].ReadValue<float>());
+                        Accelerate(1, gear1MaxVelocity, AccelerationSpeed, moveInput);
                     }
-                    else if (playerInput.actions["Clutch"].ReadValue<float>() > 0.35f && playerInput.actions["Clutch"].ReadValue<float>() < 0.75f)
+                    else if (ClutchValue > 0.35f && ClutchValue < 0.75f)
                     {
-                        Accelerate(1, gear1MaxVelocity, AccelerationSpeed, playerInput.actions["Clutch"].ReadValue<float>() + 0.15f);
+                        Accelerate(1, gear1MaxVelocity, AccelerationSpeed, ClutchValue + 0.15f);
                     }
                     break;
                 case 2:
-                    if (speedKMH > minGear2Velocity && playerInput.actions["Clutch"].ReadValue<float>() < 0.75f)
+                    if (speedKMH > minGear2Velocity && ClutchValue < 0.75f)
                     {
-                        Accelerate(1, gear2MaxVelocity, AccelerationSpeed, playerInput.actions["Accelerator"].ReadValue<float>());
+                        Accelerate(1, gear2MaxVelocity, AccelerationSpeed, moveInput);
                     }
                     break;
                 case 3:
-                    if (speedKMH > minGear3Velocity && playerInput.actions["Clutch"].ReadValue<float>() < 0.75f)
+                    if (speedKMH > minGear3Velocity && ClutchValue < 0.75f)
                     {
-                        Accelerate(1, gear3MaxVelocity, AccelerationSpeed, playerInput.actions["Accelerator"].ReadValue<float>());
+                        Accelerate(1, gear3MaxVelocity, AccelerationSpeed, moveInput);
                     }
                     break;
                 case 4:
-                    if (speedKMH > minGear4Velocity && playerInput.actions["Clutch"].ReadValue<float>() < 0.75f)
+                    if (speedKMH > minGear4Velocity && ClutchValue < 0.75f)
                     {
-                        Accelerate(1, gear4MaxVelocity, AccelerationSpeed, playerInput.actions["Accelerator"].ReadValue<float>());
+                        Accelerate(1, gear4MaxVelocity, AccelerationSpeed, moveInput);
                     }
                     break;
                 case 5:
-                    if (speedKMH > minGear5Velocity && playerInput.actions["Clutch"].ReadValue<float>() < 0.75f)
+                    if (speedKMH > minGear5Velocity && ClutchValue < 0.75f)
                     {
-                        Accelerate(1, gear5MaxVelocity, AccelerationSpeed, playerInput.actions["Accelerator"].ReadValue<float>());
+                        Accelerate(1, gear5MaxVelocity, AccelerationSpeed, moveInput);
                     }
                     break;
                 case 6:
-                    if (speedKMH > minGear6Velocity && playerInput.actions["Clutch"].ReadValue<float>() < 0.75f)
+                    if (speedKMH > minGear6Velocity && ClutchValue < 0.75f)
                     {
-                        Accelerate(1, gear6MaxVelocity, AccelerationSpeed, playerInput.actions["Accelerator"].ReadValue<float>());
+                        Accelerate(1, gear6MaxVelocity, AccelerationSpeed, moveInput);
                     }
                     break;
             }
@@ -299,18 +397,18 @@ public class CarController : MonoBehaviour
         {
             if (speedKMH > minGear1Velocity)
             {
-                Accelerate(-1, gear1MaxVelocity, AccelerationSpeed, playerInput.actions["Accelerator"].ReadValue<float>());
+                Accelerate(-1, gear1MaxVelocity, AccelerationSpeed, moveInput);
             }
-            else if (playerInput.actions["Clutch"].ReadValue<float>() > 0.35f && playerInput.actions["Clutch"].ReadValue<float>() < 0.75f)
+            else if (ClutchValue > 0.35f && ClutchValue < 0.75f)
             {
-                Accelerate(-1, gear1MaxVelocity, AccelerationSpeed, playerInput.actions["Clutch"].ReadValue<float>());
+                Accelerate(-1, gear1MaxVelocity, AccelerationSpeed, ClutchValue);
             }
         }
 
-        //TRAVAR
-        if (playerInput.actions["Brake"].IsPressed())
+        //TRAVAR 
+        if (playerInput.actions["Brake"].IsPressed() || brake >= 0.1)
         {
-            DecelerationFactor = brake;
+            DecelerationFactor = brake * brakeFactor;
             if (GearNumber == 7)
             {      
                 sphereRb.velocity = transform.forward * (Decelerate() * -1);
