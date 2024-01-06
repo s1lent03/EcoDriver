@@ -35,6 +35,11 @@ public class AI : MonoBehaviour
 
         if (doJunction)
         {
+            if (paths.Count > 0 && paths[paths.Count - 1].CompareTag("Stop"))
+                Stop(stopMultiplier);
+            else
+                Move();
+
             Junction();
         } else if (doRoundabout)
         {
@@ -50,9 +55,11 @@ public class AI : MonoBehaviour
                 Road();
             } else if (paths[paths.Count - 1].CompareTag("Stop"))
             {
-                Stop();
+                Stop(stopMultiplier);
+                direction = transform.forward * currentSpeed * Time.deltaTime;
             } else if (paths[paths.Count - 1].CompareTag("Junction"))
             {
+                Move();
                 Junction();
             } else if (paths[paths.Count - 1].CompareTag("Roundabout"))
             {
@@ -64,7 +71,7 @@ public class AI : MonoBehaviour
         }
 
         if (forceStop)
-            currentSpeed -= Time.deltaTime;
+            Stop(20);
 
         transform.position += direction;
     }
@@ -87,18 +94,18 @@ public class AI : MonoBehaviour
         direction = transform.forward * currentSpeed * Time.deltaTime;
     }
 
-    private void Stop()
+    private void Stop(float multiplier)
     {
         if (currentSpeed > 0)
-            currentSpeed -= Time.deltaTime * stopMultiplier;
+            currentSpeed -= Time.deltaTime * multiplier;
         else
             currentSpeed = 0;
-
-        direction = transform.forward * currentSpeed * Time.deltaTime;
     }
 
     private void Move()
     {
+        if (forceStop) return;
+
         if (currentSpeed < speed)
             currentSpeed += Time.deltaTime * stopMultiplier;
         else
@@ -107,8 +114,6 @@ public class AI : MonoBehaviour
 
     private void Junction()
     {
-        Move();
-
         if (!doJunction)
         {
             doJunction = true;

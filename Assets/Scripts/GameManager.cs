@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] bool isTutorial;
     [Space]
-    [SerializeField] float MinTimeOnStop;
+    [SerializeField] public float MinTimeOnStop;
 
     [Header("Warnings")]
     public bool isOnCenterLine = false;

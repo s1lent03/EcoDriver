@@ -105,11 +105,11 @@ public class CarController : MonoBehaviour
     float previousButton5Value = 0;
     float currentButton5Value = 0;
 
-    /*float previousButton8Value = 0;
+    float previousButton8Value = 0;
     float currentButton8Value = 0;
 
     float previousButton9Value = 0;
-    float currentButton9Value = 0;*/
+    float currentButton9Value = 0;
 
     float previousLeftPadValue = 0;
     float currentLeftPadValue = -1;

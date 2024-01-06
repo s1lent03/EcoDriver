@@ -118,7 +118,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   turningSpeed: 7
-  stopMultiplier: 2
+  stopMultiplier: 3.5
   forceStop: 0
 --- !u!65 &5893888727937034213
 BoxCollider:
@@ -229,8 +229,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 0.5, z: 2}
-  m_Center: {x: -0.4, y: 0.75, z: 0}
+  m_Size: {x: 2, y: 0.5, z: 5}
+  m_Center: {x: -0.9, y: 0.75, z: 0}
 --- !u!114 &559413366964405161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -244,6 +244,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   option: 1
+  activate: 0
+  cars: []
 --- !u!1001 &1853383492677568678
 PrefabInstance:
   m_ObjectHideFlags: 0

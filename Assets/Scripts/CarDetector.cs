@@ -10,7 +10,8 @@ public enum Options
 public class CarDetector : MonoBehaviour
 {
     public Options option = new Options();
-    private List<Transform> cars = new List<Transform>();
+    public bool activate;
+    [SerializeField] private List<Transform> cars = new List<Transform>();
     private Transform road;
     private string roadTag;
 
@@ -27,10 +28,16 @@ public class CarDetector : MonoBehaviour
     {
         if (option == Options.Road)
         {
-            if (cars.Count > 0)
-                road.tag = "Stop";
-            else
-                road.tag = roadTag;
+            if (activate)
+            {
+                if (cars.Count > 0)
+                {
+                    road.tag = "Stop";
+                } else
+                {
+                    road.tag = roadTag;
+                }
+            }
         } else if (option == Options.Car)
         {
             transform.parent.GetComponent<AI>().forceStop = (cars.Count > 0);

@@ -193,4 +193,12 @@ public class TraficWarningsDetector : MonoBehaviour
 
         return null;
     }
+
+    public bool CanPassByTrafficLight()
+    {
+        if (!IsTrafficLight)
+            return false;
+        else
+            return TopGreenLight.activeSelf;
+    }
 }
