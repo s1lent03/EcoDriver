@@ -53,6 +53,9 @@ public class CarController : MonoBehaviour
     [SerializeField] float tireCircumference;
     [SerializeField] float axleRatio;
 
+    [Header("Audio")]
+    [SerializeField] AudioSource engineAudio;
+
     [Header("Acceleration/Decceleration")]
     [SerializeField] float AccelerationSpeed;
     [SerializeField] float fwdForce;
@@ -132,6 +135,10 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
+        //Engine pitch
+        float enginePitch = Map(RPM, 0, 8000, 1, 2);
+        engineAudio.pitch = enginePitch;
+
         //G29
         rec = LogitechGSDK.LogiGetStateUnity(0);
 
@@ -445,6 +452,16 @@ public class CarController : MonoBehaviour
             //Aplicar maior gravidade
             sphereRb.AddForce(transform.up * -30f);
         }
+    }
+
+    //Alterar pitch do motor
+    float Map(float value, float inMin, float inMax, float outMin, float outMax)
+    {
+        // Map the input value to the output range
+        float mappedValue = outMin + (value - inMin) / (inMax - inMin) * (outMax - outMin);
+
+        // Clamp the result to ensure it stays within the desired range
+        return Mathf.Clamp(mappedValue, outMin, outMax);
     }
 
     //Faz o carro acelarar
