@@ -4,18 +4,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
 {
     [SerializeField] private string LevelGame;
     [SerializeField] private GameObject initialMenu;
-    [SerializeField] private GameObject optionsMenu;
+    [SerializeField] private GameObject audioMenu;
+    [SerializeField] private GameObject fade;
+
+    [Header("Sounds")]
+    public AudioSource buttonClickSoundFX;
 
     private float originalButtonPos = 0f;
 
     private void Start()
     {
-        optionsMenu.transform.position = new Vector3(Screen.width / 2, Screen.height + optionsMenu.GetComponent<RectTransform>().sizeDelta.y);
+        audioMenu.transform.position = new Vector3(Screen.width / 2, Screen.height + audioMenu.GetComponent<RectTransform>().sizeDelta.y);
 
         foreach (Transform button in initialMenu.transform)
         {
@@ -42,6 +47,8 @@ public class MenuManager : MonoBehaviour
     // Método para iniciar o jogo
     public void Play()
     {
+        //Toca o sound effect de click
+        buttonClickSoundFX.Play();
         StartCoroutine(TweenButtons(-Screen.width, Ease.InCubic, SwitchToGame));
     }
 
@@ -50,36 +57,44 @@ public class MenuManager : MonoBehaviour
         SceneManager.LoadScene(LevelGame);
     }
 
-    // Método para mostrar o menu de opções e ocultar o menu inicial
-    public void ShowOptions()
+    // Método para mostrar o menu de gráficos e ocultar o menu inicial
+    public void ShowAudio()
     {
-        StartCoroutine(TweenButtons(-Screen.width, Ease.InCubic, SwitchToOptions));
+        //Toca o sound effect de click
+        buttonClickSoundFX.Play();
+        StartCoroutine(TweenButtons(-Screen.width, Ease.InCubic, SwitchToAudio));
     }
 
-    private void SwitchToOptions()
+    private void SwitchToAudio()
     {
         initialMenu.SetActive(false);
-        optionsMenu.SetActive(true);
-        optionsMenu.transform.DOMove(new Vector3(Screen.width / 2, Screen.height / 2), 1).SetEase(Ease.OutCubic);
+        audioMenu.SetActive(true);
+        fade.SetActive(true);
+        audioMenu.transform.DOMove(new Vector3(Screen.width / 2, Screen.height / 2), 1).SetEase(Ease.OutCubic);
     }
 
-    // Método para sair do menu de opções e voltar ao menu inicial
+    // Método para sair dos menus de opções e voltar ao menu inicial
     public void QuitOptions()
     {
-        optionsMenu.transform.DOMove(new Vector3(Screen.width / 2, -Screen.height), 1).SetEase(Ease.InCubic).onComplete = SwitchToInitial;
+        //Toca o sound effect de click
+        buttonClickSoundFX.Play();
+        audioMenu.transform.DOMove(new Vector3(Screen.width / 2, -Screen.height), 1).SetEase(Ease.InCubic).onComplete = SwitchToInitial;
     }
 
     private void SwitchToInitial()
     {
-        optionsMenu.SetActive(false);
         initialMenu.SetActive(true);
-        optionsMenu.transform.position = new Vector3(Screen.width / 2, Screen.height + optionsMenu.GetComponent<RectTransform>().sizeDelta.y);
+        audioMenu.SetActive(false);
+        fade.SetActive(false);
+        audioMenu.transform.position = new Vector3(Screen.width / 2, Screen.height + audioMenu.GetComponent<RectTransform>().sizeDelta.y);
         StartCoroutine(TweenButtons(originalButtonPos, Ease.OutCubic, null));
     }
 
     // Método para sair do jogo
     public void QuitGame()
     {
+        //Toca o sound effect de click
+        buttonClickSoundFX.Play();
         StartCoroutine(TweenButtons(-Screen.width, Ease.InCubic, CloseApplication));
     }
 
