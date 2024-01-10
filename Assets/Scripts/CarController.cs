@@ -130,7 +130,6 @@ public class CarController : MonoBehaviour
 
         //Separar esfera do carro
         sphereRb.transform.parent = null;
-        
     }
 
     void Update()
@@ -142,25 +141,28 @@ public class CarController : MonoBehaviour
         //G29
         rec = LogitechGSDK.LogiGetStateUnity(0);
 
-        currentButton4Value = rec.rgbButtons[4];
-        currentButton5Value = rec.rgbButtons[5];
-        currentButton8Value = rec.rgbButtons[8];
-        currentButton9Value = rec.rgbButtons[9];
+        if (Input.GetJoystickNames()[0] != "Controller (Xbox One For Windows)")
+        {
+            currentButton4Value = rec.rgbButtons[4];
+            currentButton5Value = rec.rgbButtons[5];
+            currentButton8Value = rec.rgbButtons[8];
+            currentButton9Value = rec.rgbButtons[9];
 
-        if (rec.rgdwPOV[0] == 27000)
-            currentLeftPadValue = 128;
-        else
-            currentLeftPadValue = -1;
+            if (rec.rgdwPOV[0] == 27000)
+                currentLeftPadValue = 128;
+            else
+                currentLeftPadValue = -1;
 
-        if (rec.rgdwPOV[0] == 9000)
-            currentRightPadValue = 128;
-        else
-            currentRightPadValue = -1;
+            if (rec.rgdwPOV[0] == 9000)
+                currentRightPadValue = 128;
+            else
+                currentRightPadValue = -1;
 
-        if (rec.rgdwPOV[0] == 0)
-            currentUpPadValue = 128;
-        else
-            currentUpPadValue = -1;
+            if (rec.rgdwPOV[0] == 0)
+                currentUpPadValue = 128;
+            else
+                currentUpPadValue = -1;
+        }
 
         //Se a embraiagem tiver a fundo sobe uma mudança
         if ((playerInput.actions["UpGear"].triggered || (currentButton4Value == 128 && previousButton4Value != 128)) && GearNumber < 6 && ClutchValue > 0.9f)
@@ -325,7 +327,7 @@ public class CarController : MonoBehaviour
         {
             turnInput = playerInput.actions["Steer"].ReadValue<Vector2>().x;
         }
-
+        
         //Ler Embraiagem
         if (Input.GetJoystickNames()[0] == "G29 Driving Force Racing Wheel")
         {
@@ -340,11 +342,10 @@ public class CarController : MonoBehaviour
         if (Input.GetJoystickNames()[0] == "G29 Driving Force Racing Wheel")
         {
             brake = ((-rec.lRz / 32760f) + 1) / 2;
-            Debug.Log(brake);
         }
         else
         {
-            brake = 1;
+            brake = playerInput.actions["Brake"].ReadValue<float>();
         }
 
         //ACELARAR
