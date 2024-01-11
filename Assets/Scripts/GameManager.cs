@@ -26,15 +26,22 @@ public class GameManager : MonoBehaviour
     public bool passedStop = false;
     public float TimeSpentOnStop;
     public bool passedRedLight = false;
+    public int maxVelocityInArea = 50;
+    public bool canCheckVelocity = true;
 
     [Header("Traffic Violations Counter")]
-    [SerializeField] int LightTrafficViolationsCount;
-    [SerializeField] int SeriousTrafficViolationsCount;
-    [SerializeField] int VerySeriousTrafficViolationsCount;
+    [SerializeField] public int LightTrafficViolationsCount;
+    [SerializeField] public int SeriousTrafficViolationsCount;
+    [SerializeField] public int VerySeriousTrafficViolationsCount;
     [Space]
     [SerializeField] TMP_Text LightTrafficViolationsTxt;
     [SerializeField] TMP_Text SeriousTrafficViolationsTxt;
     [SerializeField] TMP_Text VerySeriousTrafficViolationsTxt;
+    [Space]
+    [SerializeField] public int passedStopSign;
+    [SerializeField] public int passedCentralLine;
+    [SerializeField] public int passedTrafficLight;
+    [SerializeField] public int passedOverSpeedLimit;
 
     void Start()
     {
@@ -58,6 +65,7 @@ public class GameManager : MonoBehaviour
             VerySeriousTrafficViolationsCount++;
             StartCoroutine(UpdateInfo("MuitoGrave"));
             isOnCenterLine = false;
+            passedCentralLine++;
         }
 
         if (passedStop)
@@ -66,6 +74,7 @@ public class GameManager : MonoBehaviour
             {
                 SeriousTrafficViolationsCount++;
                 StartCoroutine(UpdateInfo("Grave"));
+                passedStopSign++;
             }          
             
             passedStop = false;
@@ -76,10 +85,37 @@ public class GameManager : MonoBehaviour
             VerySeriousTrafficViolationsCount++;
             StartCoroutine(UpdateInfo("MuitoGrave"));
             passedRedLight = false;
+            passedTrafficLight++;
         }
 
         if (playerInput.actions["ShowInfo"].triggered)
             ShowWindow(isWindowActive);
+
+        if (canCheckVelocity && playerCar.GetComponent<CarController>().speedKMH > maxVelocityInArea)
+        {
+            if (playerCar.GetComponent<CarController>().speedKMH - maxVelocityInArea <= 20)
+            {
+                LightTrafficViolationsCount++;
+                StartCoroutine(UpdateInfo("Leve"));
+            }
+                
+
+            if (playerCar.GetComponent<CarController>().speedKMH - maxVelocityInArea > 20 && playerCar.GetComponent<CarController>().speedKMH - maxVelocityInArea <= 40)
+            {
+                SeriousTrafficViolationsCount++;
+                StartCoroutine(UpdateInfo("Grave"));
+            }
+                
+
+            if (playerCar.GetComponent<CarController>().speedKMH - maxVelocityInArea > 40)
+            {
+                VerySeriousTrafficViolationsCount++;
+                StartCoroutine(UpdateInfo("MuitoGrave"));
+            }
+
+            passedOverSpeedLimit++;
+            canCheckVelocity = false;
+        }
     }
 
     IEnumerator UpdateInfo(string typeOfViolation)

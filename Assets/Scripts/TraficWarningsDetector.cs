@@ -10,6 +10,8 @@ public class TraficWarningsDetector : MonoBehaviour
     [SerializeField] bool IsCentralLine;
     [SerializeField] bool IsStopSign;
     [SerializeField] bool IsTrafficLight;
+    [SerializeField] bool IsSpeedSign;
+    [SerializeField] int speedLimit;
     bool canCarGo;
     float EnterStopTime;
 
@@ -159,6 +161,12 @@ public class TraficWarningsDetector : MonoBehaviour
 
             if (IsStopSign)
                 EnterStopTime = Time.time;
+
+            if (IsSpeedSign)
+            {
+                gameManager.canCheckVelocity = true;
+                gameManager.maxVelocityInArea = speedLimit;
+            }
         }     
     }
 

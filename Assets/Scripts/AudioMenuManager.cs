@@ -40,21 +40,21 @@ public class AudioMenuManager : MonoBehaviour
         for (int lineNumber = 2; lineNumber <= 4; lineNumber++)
         {
             int startOfWord = lines[lineNumber].IndexOf("_");
-            int CurrentQuality;
+            float CurrentQuality;
 
             switch (lineNumber)
             {
                 case 2:
 
-                    CurrentQuality = int.Parse(lines[lineNumber].Substring(startOfWord + 1));
+                    CurrentQuality = float.Parse(lines[lineNumber].Substring(startOfWord + 1));
                     MusicSlider.value = CurrentQuality;
                     break;
                 case 3:
-                    CurrentQuality = int.Parse(lines[lineNumber].Substring(startOfWord + 1));
+                    CurrentQuality = float.Parse(lines[lineNumber].Substring(startOfWord + 1));
                     SoundFxSlider.value = CurrentQuality;
                     break;
                 case 4:
-                    CurrentQuality = int.Parse(lines[lineNumber].Substring(startOfWord + 1));
+                    CurrentQuality = float.Parse(lines[lineNumber].Substring(startOfWord + 1));
                     AmbienceSlider.value = CurrentQuality;
                     break;
             }

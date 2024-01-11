@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
+using System.IO;
 using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
@@ -15,6 +16,9 @@ public class MenuManager : MonoBehaviour
 
     [Header("Sounds")]
     public AudioSource buttonClickSoundFX;
+
+    [Header("Others")]
+    [SerializeField] string settingsFileName;
 
     private float originalButtonPos = 0f;
 
@@ -29,6 +33,33 @@ public class MenuManager : MonoBehaviour
             button.position = new Vector3(-Screen.width, button.position.y);
             button.transform.DOMove(new Vector3(originalButtonPos, button.position.y), 1).SetEase(Ease.OutCubic);
         }
+
+        //Verifica se existe o ficheiro que guarda as settings, se não cria-o
+        string filePath = Application.dataPath + settingsFileName;
+        if (!File.Exists(filePath))
+        {
+            string[] content =
+            {
+                "Selected visual quality: _Medium",
+                "",
+                "Music Value: _-10",
+                "SoundFX Value: _-10",
+                "Ambience Value: _-10",
+            };
+
+            WriteTextToFile(filePath, content);
+
+            PlayerPrefs.SetString("SettingsPath", filePath);
+        }
+
+        //Atualiza os valores dos mixers
+        audioMenu.GetComponent<AudioMenuManager>().UpdateMixersBasedOnFile();
+    }
+
+    void WriteTextToFile(string fileName, string[] content)
+    {
+        //Escreve as linhas no ficheiro
+        File.WriteAllLines(fileName, content);
     }
 
     private IEnumerator TweenButtons(float position, Ease ease, Action function)

@@ -10,6 +10,7 @@ public class PauseMenuManager : MonoBehaviour
 {
     [Header("MenusGameobjects")]
     public GameObject pauseMenu;
+    public GameObject endMenu;
     public GameObject audioMenu;
     [Space]
     public GameObject eventSystemObject;
@@ -92,6 +93,16 @@ public class PauseMenuManager : MonoBehaviour
         //Esconde o menu pausa e abre o menu dos visuals
         pauseMenu.SetActive(false);
         audioMenu.SetActive(true);
+    }
+
+    //Abre menu final
+    public void EndScreen()
+    {
+        //Toca o sound effect de click
+        buttonClickSoundFX.Play();
+
+        pauseMenu.SetActive(false);
+        endMenu.SetActive(true);
     }
 
     //Abre o menu do audio

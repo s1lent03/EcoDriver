@@ -55,6 +55,8 @@ public class CarController : MonoBehaviour
 
     [Header("Audio")]
     [SerializeField] AudioSource engineAudio;
+    [SerializeField] AudioSource brakeAudio;
+    [SerializeField] AudioSource blinkersAudio;
 
     [Header("Acceleration/Decceleration")]
     [SerializeField] float AccelerationSpeed;
@@ -99,6 +101,7 @@ public class CarController : MonoBehaviour
     bool rightBlinkerOn = false;
     bool isBlinking = false;
     bool calculateEmissions = true;
+    bool canBrake = true;
 
     [Header("G29 Wheel")]
     static LogitechGSDK.DIJOYSTATE2ENGINES rec;
@@ -429,6 +432,14 @@ public class CarController : MonoBehaviour
             //Ligar as luzes de travagem
             leftBreakLight.SetActive(true);
             rightBreakLight.SetActive(true);
+
+            //Audio
+            if (canBrake)
+            {
+                brakeAudio.Play();
+                canBrake = false;
+            }
+            
         }
         else
         {
@@ -437,6 +448,8 @@ public class CarController : MonoBehaviour
             //Desligar as luzes de travagem
             leftBreakLight.SetActive(false);
             rightBreakLight.SetActive(false);
+
+            canBrake = true;
         }
             
 
@@ -578,6 +591,8 @@ public class CarController : MonoBehaviour
     IEnumerator BlinkLight(GameObject LightToBlink)
     {
         isBlinking = true;
+
+        blinkersAudio.Play();
 
         LightToBlink.SetActive(true);
         yield return new WaitForSeconds(timeBetweenBlinks);
