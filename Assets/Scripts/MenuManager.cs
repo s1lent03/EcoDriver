@@ -10,6 +10,7 @@ using UnityEngine.UI;
 public class MenuManager : MonoBehaviour
 {
     [SerializeField] private string LevelGame;
+    [SerializeField] private string TutorialGame;
     [SerializeField] private GameObject initialMenu;
     [SerializeField] private GameObject audioMenu;
     [SerializeField] private GameObject fade;
@@ -76,16 +77,29 @@ public class MenuManager : MonoBehaviour
     }
 
     // Método para iniciar o jogo
-    public void Play()
+    public void PlayRoam()
     {
         //Toca o sound effect de click
         buttonClickSoundFX.Play();
         StartCoroutine(TweenButtons(-Screen.width, Ease.InCubic, SwitchToGame));
     }
 
+    // Método para iniciar o jogo
+    public void PlayTutorial()
+    {
+        //Toca o sound effect de click
+        buttonClickSoundFX.Play();
+        StartCoroutine(TweenButtons(-Screen.width, Ease.InCubic, SwitchToTutorial));
+    }
+
     private void SwitchToGame()
     {
         SceneManager.LoadScene(LevelGame);
+    }
+
+    private void SwitchToTutorial()
+    {
+        SceneManager.LoadScene(TutorialGame);
     }
 
     // Método para mostrar o menu de gráficos e ocultar o menu inicial

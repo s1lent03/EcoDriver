@@ -4,6 +4,7 @@ using Unity.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements.Experimental;
 
 public class CarController : MonoBehaviour
@@ -88,12 +89,15 @@ public class CarController : MonoBehaviour
     [SerializeField] GameObject rightHeadLight;
 
     [Header("Emissions")]
-    [SerializeField] float averageEmissions;
+    [SerializeField] public float averageEmissions;
     [SerializeField] float minEmissionLimit;
     [SerializeField] float maxEmissionLimit;
     [Space]
-    [SerializeField] float totalEmissions;
-    [SerializeField] float totalDistance;
+    [SerializeField] public float totalEmissions;
+    [SerializeField] public float totalDistance;
+    private Vector3 initialPosition;
+    private float sampleInterval = 0.1f;
+    private float timeSinceLastSample;
 
     [Header("Bools")]
     [ReadOnly] public bool isGrounded;
@@ -111,19 +115,20 @@ public class CarController : MonoBehaviour
     float previousButton5Value = 0;
     float currentButton5Value = 0;
 
-    float previousButton8Value = 0;
-    float currentButton8Value = 0;
+    float previousButton10Value = 0;
+    float currentButton10Value = -1;
 
-    float previousButton9Value = 0;
-    float currentButton9Value = 0;
+    float previousButton11Value = 0;
+    float currentButton11Value = -1;
 
-    float previousLeftPadValue = 0;
-    float currentLeftPadValue = -1;
-
-    float previousRightPadValue = 0;
-    float currentRightPadValue = -1;
-
-    float currentUpPadValue = -1;
+    [Header("Tutorials")]
+    [SerializeField] int currentTutorial;
+    [SerializeField] GameObject tutorial1;
+    [SerializeField] GameObject tutorial2;
+    [SerializeField] GameObject tutorial3;
+    [SerializeField] GameObject tutorial4;
+    [SerializeField] GameObject tutorial5;
+    [SerializeField] GameObject tutorial6;
 
     void Start()
     {
@@ -133,6 +138,17 @@ public class CarController : MonoBehaviour
 
         //Separar esfera do carro
         sphereRb.transform.parent = null;
+
+        initialPosition = transform.position;
+        timeSinceLastSample = 0f;
+
+        //Tutorial
+        if (SceneManager.GetActiveScene().name == "Tutorial")
+        {
+            tutorial1.SetActive(true);
+            currentTutorial = 1;
+        }
+
     }
 
     void Update()
@@ -148,34 +164,50 @@ public class CarController : MonoBehaviour
         {
             currentButton4Value = rec.rgbButtons[4];
             currentButton5Value = rec.rgbButtons[5];
-            currentButton8Value = rec.rgbButtons[8];
-            currentButton9Value = rec.rgbButtons[9];
-
-            if (rec.rgdwPOV[0] == 27000)
-                currentLeftPadValue = 128;
-            else
-                currentLeftPadValue = -1;
-
-            if (rec.rgdwPOV[0] == 9000)
-                currentRightPadValue = 128;
-            else
-                currentRightPadValue = -1;
-
-            if (rec.rgdwPOV[0] == 0)
-                currentUpPadValue = 128;
-            else
-                currentUpPadValue = -1;
+            currentButton10Value = rec.rgbButtons[10];
+            currentButton11Value = rec.rgbButtons[11];
         }
 
         //Se a embraiagem tiver a fundo sobe uma mudança
         if ((playerInput.actions["UpGear"].triggered || (currentButton4Value == 128 && previousButton4Value != 128)) && GearNumber < 6 && ClutchValue > 0.9f)
+        {
             GearNumber += 1;
+
+            //Tutorial
+            if (SceneManager.GetActiveScene().name == "Tutorial" && currentTutorial == 1)
+            {
+                tutorial1.SetActive(false);
+                tutorial2.SetActive(true);
+                currentTutorial = 2;
+            }
+
+            //Tutorial
+            if (SceneManager.GetActiveScene().name == "Tutorial" && currentTutorial == 3)
+            {
+                tutorial3.SetActive(false);
+                tutorial4.SetActive(true);
+                currentTutorial = 4;
+            }
+        }
+
+        if ((playerInput.actions["UpGear"].triggered || (currentButton4Value == 128 && previousButton4Value != 128)) && GearNumber == 7 && ClutchValue > 0.9f)
+            GearNumber = 1;
 
         previousButton4Value = currentButton4Value;
 
         //Se a embraiagem tiver a fundo desce uma mudança
         if ((playerInput.actions["DownGear"].triggered || (currentButton5Value == 128 && previousButton5Value != 128)) && GearNumber >= 0 && ClutchValue > 0.9f)
+        {
             GearNumber -= 1;
+
+            //Tutorial
+            if (SceneManager.GetActiveScene().name == "Tutorial" && currentTutorial == 4)
+            {
+                tutorial4.SetActive(false);
+                tutorial5.SetActive(true);
+                currentTutorial = 5;
+            }
+        }            
 
         if (GearNumber == -1)
             GearNumber = 7;
@@ -225,12 +257,12 @@ public class CarController : MonoBehaviour
 
         //PISCAS
         //Esquerda
-        if ((playerInput.actions["LeftBlinker"].triggered || (currentLeftPadValue == 128 && previousLeftPadValue != 128)) && !leftBlinkerOn)
+        if ((playerInput.actions["LeftBlinker"].triggered || (currentButton11Value == 128 && previousButton11Value != 128)) && !leftBlinkerOn)
             leftBlinkerOn = true;
-        else if ((playerInput.actions["LeftBlinker"].triggered || (currentLeftPadValue == 128 && previousLeftPadValue != 128)) && leftBlinkerOn)
+        else if ((playerInput.actions["LeftBlinker"].triggered || (currentButton11Value == 128 && previousButton11Value != 128)) && leftBlinkerOn)
             leftBlinkerOn = false;
 
-        previousLeftPadValue = currentLeftPadValue;
+        previousButton11Value = currentButton11Value;
 
         if (leftBlinkerOn)
         {       
@@ -242,12 +274,12 @@ public class CarController : MonoBehaviour
         }
 
         //Direita
-        if ((playerInput.actions["RightBlinker"].triggered || (currentRightPadValue == 128 && previousRightPadValue != 128)) && !rightBlinkerOn)
+        if ((playerInput.actions["RightBlinker"].triggered || (currentButton10Value == 128 && previousButton10Value != 128)) && !rightBlinkerOn)
             rightBlinkerOn = true;
-        else if ((playerInput.actions["RightBlinker"].triggered || (currentRightPadValue == 128 && previousRightPadValue != 128)) && rightBlinkerOn)
+        else if ((playerInput.actions["RightBlinker"].triggered || (currentButton10Value == 128 && previousButton10Value != 128)) && rightBlinkerOn)
             rightBlinkerOn = false;
 
-        previousRightPadValue = currentRightPadValue;
+        previousButton10Value = currentButton10Value;
 
         if (rightBlinkerOn)
         {
@@ -259,7 +291,7 @@ public class CarController : MonoBehaviour
         }
 
         //Máximos
-        if (playerInput.actions["HeadLights"].IsPressed() || currentUpPadValue == 128)
+        if (playerInput.actions["HeadLights"].IsPressed())
         {
             leftHeadLight.SetActive(true);
             rightHeadLight.SetActive(true);
@@ -364,6 +396,14 @@ public class CarController : MonoBehaviour
                     if (speedKMH > minGear1Velocity && ClutchValue < 0.75f)
                     {
                         Accelerate(1, gear1MaxVelocity, AccelerationSpeed, moveInput);
+
+                        //Tutorial
+                        if (SceneManager.GetActiveScene().name == "Tutorial" && currentTutorial == 2)
+                        {
+                            tutorial2.SetActive(false);
+                            tutorial3.SetActive(true);
+                            currentTutorial = 3;
+                        }
                     }
                     else if (ClutchValue > 0.35f && ClutchValue < 0.75f)
                     {
@@ -439,7 +479,14 @@ public class CarController : MonoBehaviour
                 brakeAudio.Play();
                 canBrake = false;
             }
-            
+
+            //Tutorial
+            if (SceneManager.GetActiveScene().name == "Tutorial" && currentTutorial == 5)
+            {
+                tutorial5.SetActive(false);
+                tutorial6.SetActive(true);
+                currentTutorial = 6;
+            }
         }
         else
         {
@@ -554,7 +601,24 @@ public class CarController : MonoBehaviour
 
         // Update total emissions and total distance
         totalEmissions += estimatedEmissions * deltaTime;
-        totalDistance += speedKMH * deltaTime;
+        //totalDistance += speedKMH * deltaTime;
+
+        timeSinceLastSample += Time.deltaTime;
+
+        // Sample the position at regular intervals
+        if (timeSinceLastSample >= sampleInterval)
+        {
+            timeSinceLastSample = 0f;
+
+            // Calculate the distance moved since the last sample
+            float distanceSinceLastSample = Vector3.Distance(initialPosition, transform.position);
+
+            // Add this distance to the total distance
+            totalDistance += distanceSinceLastSample;
+
+            // Update the initial position for the next sample
+            initialPosition = transform.position;
+        }
     }
 
     float CalculateAverageEmissions()
@@ -591,6 +655,13 @@ public class CarController : MonoBehaviour
     IEnumerator BlinkLight(GameObject LightToBlink)
     {
         isBlinking = true;
+
+        //Tutorial
+        if (SceneManager.GetActiveScene().name == "Tutorial" && currentTutorial == 6)
+        {
+            tutorial6.SetActive(false);
+            currentTutorial = 7;
+        }
 
         blinkersAudio.Play();
 

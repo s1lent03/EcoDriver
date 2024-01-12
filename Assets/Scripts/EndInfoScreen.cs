@@ -15,7 +15,12 @@ public class EndInfoScreen : MonoBehaviour
     [SerializeField] TMP_Text numLinhas;
     [SerializeField] TMP_Text numVelocidade;
     [Space]
+    [SerializeField] TMP_Text numEmissoes;
+    [SerializeField] TMP_Text numDistancia;
+    [SerializeField] TMP_Text numEmissoesMedia;
+    [Space]
     [SerializeField] GameManager manager; 
+    [SerializeField] CarController playerCar;
 
 
     // Update is called once per frame
@@ -29,5 +34,9 @@ public class EndInfoScreen : MonoBehaviour
         numVermelhos.text = manager.passedTrafficLight.ToString();
         numLinhas.text = manager.passedCentralLine.ToString();
         numVelocidade.text = manager.passedOverSpeedLimit.ToString();
+
+        numEmissoes.text = playerCar.totalEmissions.ToString();
+        numDistancia.text = playerCar.totalDistance.ToString();
+        numEmissoesMedia.text = playerCar.averageEmissions.ToString();
     }
 }

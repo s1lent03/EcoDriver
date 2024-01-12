@@ -590,13 +590,17 @@ public class LogitechGSDK
         ret.rglVSlider = new int[2];
         ret.rglASlider = new int[2];
         ret.rglFSlider = new int[2];
-        try
+
+        if (Input.GetJoystickNames()[0] != "Controller (Xbox One For Windows)")
         {
-            ret = (DIJOYSTATE2ENGINES)Marshal.PtrToStructure(LogiGetStateENGINES(index), typeof(DIJOYSTATE2ENGINES));
-        }
-        catch (System.ArgumentException)
-        {
-            Debug.Log("Exception catched");
+            try
+            {
+                ret = (DIJOYSTATE2ENGINES)Marshal.PtrToStructure(LogiGetStateENGINES(index), typeof(DIJOYSTATE2ENGINES));
+            }
+            catch (System.ArgumentException)
+            {
+                Debug.Log("Exception catched");
+            }
         }
         return ret;
     }

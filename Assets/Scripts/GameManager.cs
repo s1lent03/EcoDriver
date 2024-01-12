@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 using DG.Tweening;
 using TMPro;
 using UnityEngine.SceneManagement;
@@ -12,6 +11,8 @@ public class GameManager : MonoBehaviour
     [Header("GameObjects")]
     [SerializeField] GameObject playerCar;
     [SerializeField] GameObject carPrefab;
+    [SerializeField] GameObject notificationPrefab;
+    [SerializeField] Transform notificationParent;
     PlayerInput playerInput;
     [Space]
     [SerializeField] GameObject InfoWindow;
@@ -43,6 +44,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] public int passedTrafficLight;
     [SerializeField] public int passedOverSpeedLimit;
 
+    GameObject notification;
+    public bool isDoingNotification = false;
+
     void Start()
     {
         playerInput = GetComponent<PlayerInput>();     
@@ -60,8 +64,27 @@ public class GameManager : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }*/
 
+        //Testar Notificações
+        if (notificationParent.childCount > 0)
+            isDoingNotification = true;
+        else
+            isDoingNotification = false;
+
         if (isOnCenterLine)
         {
+            //Notificação
+            if (isDoingNotification == false)
+            {
+                notification = Instantiate(notificationPrefab, notificationParent);
+                notification.GetComponent<Notification>().ReceiveNotification("Passou por cima de uma linha contínua!", WarningType.MtGrave);
+            }
+            else
+            {
+                notification.GetComponent<Notification>().DestroySelf();
+                notification = Instantiate(notificationPrefab, notificationParent);
+                notification.GetComponent<Notification>().ReceiveNotification("Passou por cima de uma linha contínua!", WarningType.MtGrave);             
+            }
+
             VerySeriousTrafficViolationsCount++;
             StartCoroutine(UpdateInfo("MuitoGrave"));
             isOnCenterLine = false;
@@ -72,6 +95,19 @@ public class GameManager : MonoBehaviour
         {
             if (TimeSpentOnStop < MinTimeOnStop)
             {
+                //Notificação
+                if (isDoingNotification == false)
+                {
+                    notification = Instantiate(notificationPrefab, notificationParent);
+                    notification.GetComponent<Notification>().ReceiveNotification("Passou por um stop sem parar!", WarningType.Grave);
+                }
+                else
+                {
+                    notification.GetComponent<Notification>().DestroySelf();
+                    notification = Instantiate(notificationPrefab, notificationParent);
+                    notification.GetComponent<Notification>().ReceiveNotification("Passou por um stop sem parar!", WarningType.Grave);
+                }
+
                 SeriousTrafficViolationsCount++;
                 StartCoroutine(UpdateInfo("Grave"));
                 passedStopSign++;
@@ -82,6 +118,19 @@ public class GameManager : MonoBehaviour
 
         if (passedRedLight)
         {
+            //Notificação
+            if (isDoingNotification == false)
+            {
+                notification = Instantiate(notificationPrefab, notificationParent);
+                notification.GetComponent<Notification>().ReceiveNotification("Passou por um semáforo vermelho sem parar!", WarningType.MtGrave);
+            }
+            else
+            {
+                notification.GetComponent<Notification>().DestroySelf();
+                notification = Instantiate(notificationPrefab, notificationParent);
+                notification.GetComponent<Notification>().ReceiveNotification("Passou por um semáforo vermelho sem parar!", WarningType.MtGrave);
+            }
+
             VerySeriousTrafficViolationsCount++;
             StartCoroutine(UpdateInfo("MuitoGrave"));
             passedRedLight = false;
@@ -95,6 +144,19 @@ public class GameManager : MonoBehaviour
         {
             if (playerCar.GetComponent<CarController>().speedKMH - maxVelocityInArea <= 20)
             {
+                //Notificação
+                if (isDoingNotification == false)
+                {
+                    notification = Instantiate(notificationPrefab, notificationParent);
+                    notification.GetComponent<Notification>().ReceiveNotification("Passou o limite de velocidade nesta zona!", WarningType.Leve);
+                }
+                else
+                {
+                    notification.GetComponent<Notification>().DestroySelf();
+                    notification = Instantiate(notificationPrefab, notificationParent);
+                    notification.GetComponent<Notification>().ReceiveNotification("Passou o limite de velocidade nesta zona!", WarningType.Leve);
+                }
+
                 LightTrafficViolationsCount++;
                 StartCoroutine(UpdateInfo("Leve"));
             }
@@ -102,6 +164,19 @@ public class GameManager : MonoBehaviour
 
             if (playerCar.GetComponent<CarController>().speedKMH - maxVelocityInArea > 20 && playerCar.GetComponent<CarController>().speedKMH - maxVelocityInArea <= 40)
             {
+                //Notificação
+                if (isDoingNotification == false)
+                {
+                    notification = Instantiate(notificationPrefab, notificationParent);
+                    notification.GetComponent<Notification>().ReceiveNotification("Passou o limite de velocidade nesta zona!", WarningType.Grave);
+                }
+                else
+                {
+                    notification.GetComponent<Notification>().DestroySelf();
+                    notification = Instantiate(notificationPrefab, notificationParent);
+                    notification.GetComponent<Notification>().ReceiveNotification("Passou o limite de velocidade nesta zona!", WarningType.Grave);
+                }
+
                 SeriousTrafficViolationsCount++;
                 StartCoroutine(UpdateInfo("Grave"));
             }
@@ -109,6 +184,19 @@ public class GameManager : MonoBehaviour
 
             if (playerCar.GetComponent<CarController>().speedKMH - maxVelocityInArea > 40)
             {
+                //Notificação
+                if (isDoingNotification == false)
+                {
+                    notification = Instantiate(notificationPrefab, notificationParent);
+                    notification.GetComponent<Notification>().ReceiveNotification("Passou o limite de velocidade nesta zona!", WarningType.MtGrave);
+                }
+                else
+                {
+                    notification.GetComponent<Notification>().DestroySelf();
+                    notification = Instantiate(notificationPrefab, notificationParent);
+                    notification.GetComponent<Notification>().ReceiveNotification("Passou o limite de velocidade nesta zona!", WarningType.MtGrave);
+                }
+
                 VerySeriousTrafficViolationsCount++;
                 StartCoroutine(UpdateInfo("MuitoGrave"));
             }

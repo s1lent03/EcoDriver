@@ -476,17 +476,6 @@
                 },
                 {
                     "name": "",
-                    "id": "5a380c69-6df1-4108-aa57-4c5d5b58cc4a",
-                    "path": "<HID::Logitech G29 Driving Force Racing Wheel>/stick/left",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "LeftBlinker",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "bcc70bfc-639b-4988-a0fa-a2b2f2f4b857",
                     "path": "<DualShockGamepad>/dpad/right",
                     "interactions": "",

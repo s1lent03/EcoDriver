@@ -17,6 +17,9 @@ public class AudioMenuManager : MonoBehaviour
     [SerializeField] AudioMixer AmbienceMixer;
     [SerializeField] AudioMixer SoundFxMixer;
 
+    [Header("Others")]
+    [SerializeField] string settingsFileName;
+
     public void OnMusicSliderValueChanged()
     {
         MusicMixer.SetFloat("MusicVolume", MusicSlider.value);
@@ -34,7 +37,7 @@ public class AudioMenuManager : MonoBehaviour
 
     public void UpdateSlidersBasedOnFile()
     {
-        string path = PlayerPrefs.GetString("SettingsPath");
+        string path = Application.dataPath + settingsFileName;
         string[] lines = File.ReadAllLines(path);
 
         for (int lineNumber = 2; lineNumber <= 4; lineNumber++)
@@ -63,27 +66,26 @@ public class AudioMenuManager : MonoBehaviour
 
     public void UpdateMixersBasedOnFile()
     {
-        string path = PlayerPrefs.GetString("SettingsPath");
+        string path = Application.dataPath + settingsFileName;
         string[] lines = File.ReadAllLines(path);
 
         for (int lineNumber = 2; lineNumber <= 4; lineNumber++)
         {
             int startOfWord = lines[lineNumber].IndexOf("_");
-            int CurrentQuality;
+            float CurrentQuality;
 
             switch (lineNumber)
             {
                 case 2:
-                    
-                    CurrentQuality = int.Parse(lines[lineNumber].Substring(startOfWord + 1));
+                    CurrentQuality = float.Parse(lines[lineNumber].Substring(startOfWord + 1));
                     MusicMixer.SetFloat("MusicVolume", CurrentQuality);
                     break;
                 case 3:
-                    CurrentQuality = int.Parse(lines[lineNumber].Substring(startOfWord + 1));
+                    CurrentQuality = float.Parse(lines[lineNumber].Substring(startOfWord + 1));
                     SoundFxMixer.SetFloat("SoundFxVolume", CurrentQuality);
                     break;
                 case 4:
-                    CurrentQuality = int.Parse(lines[lineNumber].Substring(startOfWord + 1));
+                    CurrentQuality = float.Parse(lines[lineNumber].Substring(startOfWord + 1));
                     AmbienceMixer.SetFloat("AmbienceVolume", CurrentQuality);
                     break;
             }
@@ -92,7 +94,7 @@ public class AudioMenuManager : MonoBehaviour
 
     public void SaveMixerValues()
     {
-        string path = PlayerPrefs.GetString("SettingsPath");
+        string path = Application.dataPath + settingsFileName;
         string[] lines = File.ReadAllLines(path);
 
         for (int lineNumber = 2; lineNumber <= 4; lineNumber++)
