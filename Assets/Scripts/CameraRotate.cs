@@ -5,13 +5,12 @@ using UnityEngine.InputSystem;
 
 public class CameraRotate : MonoBehaviour
 {
-    public float rotationPower;
-    public PlayerInput playerInput;
+    public Transform follow;
+    public float rotationSpeed;
 
     private void Update()
     {
-        Vector2 mouseMovement = playerInput.actions["Look"].ReadValue<Vector2>();
-        transform.rotation *= Quaternion.AngleAxis(mouseMovement.x * rotationPower, Vector3.up);
-        transform.rotation *= Quaternion.AngleAxis(mouseMovement.y * rotationPower, Vector3.up);
+        transform.position = follow.position;
+        transform.rotation = Quaternion.Slerp(transform.rotation, follow.rotation, rotationSpeed * Time.deltaTime);
     }
 }
