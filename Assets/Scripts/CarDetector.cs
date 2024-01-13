@@ -46,7 +46,7 @@ public class CarDetector : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!cars.Contains(other.transform) && other.transform.CompareTag("Car"))
+        if (!cars.Contains(other.transform) && (other.transform.CompareTag("Car") || other.transform.CompareTag("Player")))
             cars.Add(other.transform);
     }
 

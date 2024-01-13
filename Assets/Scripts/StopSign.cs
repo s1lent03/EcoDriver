@@ -13,7 +13,7 @@ public class StopSign : MonoBehaviour
     {
         if (cars.Count > 0)
         {
-            if (!transform.CompareTag("Stop"))
+            if (timer == 0 && !transform.CompareTag("Stop"))
                 transform.tag = "Stop";
             else if (timer < gameManager.MinTimeOnStop)
                 timer += Time.deltaTime;
