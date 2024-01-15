@@ -1,5 +1,5 @@
 Selected visual quality: _Medium
 
 Music Value: _-13,24747
-SoundFX Value: _-15,90124
-Ambience Value: _-14,27804
+SoundFX Value: _-26,02781
+Ambience Value: _-7,088614
