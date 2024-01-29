@@ -22,11 +22,11 @@ To drive the car, the player has to take the clutch and gears into account, both
 
 The game also detects traffic violations like speeding, not stopping at STOP or Traffic Lights and others. These are all saved into variables and shown to the player at the end of each game session.
 
-![image](https://github.com/s1lent03/EcoDriver/assets/100197427/fffe1ccb-5adb-4117-a313-3b6f0fa4cf52)
+<img align="center" src="https://github.com/s1lent03/EcoDriver/assets/100197427/fffe1ccb-5adb-4117-a313-3b6f0fa4cf52" width="500">
 
 In addition to showing the traffic violations, it also shows the distance traveled and a very rough estimate of the emissions of the vehicle.
 
-![image](https://github.com/s1lent03/EcoDriver/assets/100197427/cd3bdf06-2a6b-4bf6-a2f1-a4cbc8753a9d)
+<img align="center" src="https://github.com/s1lent03/EcoDriver/assets/100197427/cd3bdf06-2a6b-4bf6-a2f1-a4cbc8753a9d" width="500">
 
 ### Controllers
 
