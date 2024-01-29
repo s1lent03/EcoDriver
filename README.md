@@ -24,7 +24,7 @@ The game also detects traffic violations like speeding, not stopping at STOP or 
 
 <img align="center" src="https://github.com/s1lent03/EcoDriver/assets/100197427/fffe1ccb-5adb-4117-a313-3b6f0fa4cf52" width="500">
 
-
+<br>
 In addition to showing the traffic violations, it also shows the distance traveled and a very rough estimate of the emissions of the vehicle.
 
 <img align="center" src="https://github.com/s1lent03/EcoDriver/assets/100197427/cd3bdf06-2a6b-4bf6-a2f1-a4cbc8753a9d" width="500">
